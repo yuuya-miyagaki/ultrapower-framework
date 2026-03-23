@@ -37,6 +37,35 @@ npm test  # / pytest / cargo test / go test ./...
 
 非Webプロジェクトの場合、Step 3（ブラウザQA）は **スキップ** する。
 
+## Step 2.5: Dev Server 起動（Webアプリの場合）
+
+ブラウザQAの前に、dev server を自動検出・起動する:
+
+### 起動コマンド検出ルール
+
+| 検出対象 | 起動コマンド |
+|-----------|-----------|
+| `package.json` に `scripts.dev` | `npm run dev` |
+| `package.json` に `scripts.start` | `npm start` |
+| `index.html` がルートに存在 | `npx -y serve . -l 3456` |
+| Pythonプロジェクト | `python -m http.server 3456` |
+| 上記いずれも該当しない | ユーザーに起動方法を確認 |
+
+### 実行手順
+
+```bash
+# 1. 起動コマンド検出
+grep_search: "dev\|start" 対象: package.json
+
+# 2. バックグラウンドで起動
+run_command: npm run dev  # or 検出したコマンド
+
+# 3. 起動確認（ポート番号取得）
+# 出力から localhost:XXXX を確認
+```
+
+> **ポート番号**: デフォルトの 3000 / 5173 / 8080 等を確認。競合時は別ポートを使用。
+
 ## Step 3: ブラウザQA（Webアプリの場合）
 
 Playwright MCP でユーザーフローを検証：

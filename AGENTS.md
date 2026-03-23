@@ -148,6 +148,18 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 | `prisma/schema.prisma` | **Prisma ORM** (DB種別はschema参照) |
 | 両方検出 / 検出なし | **ユーザーに質問** |
 
+### DB不使用プロジェクト（Noneパス）
+
+上記のシグナルがいずれも検出されず、プロジェクトがDBを使用しない場合:
+
+```
+DB BACKEND: None
+スキップ: DB関連のステップ（マイグレーション、セキュリティルール等）
+対象: 静的サイト、CLIツール、ライブラリ、フロントエンドのみPJ等
+```
+
+**アクション**: ultra-onboard / ultra-implement / ultra-ship でDB関連ステップをスキップ。
+
 ### Supabase プロジェクト
 
 ```
@@ -318,11 +330,12 @@ docs/ultrapower/
 ├── specs/                ← ultra-brainstorm（設計仕様書）
 ├── designs/              ← ultra-brainstorm / ultra-design-system
 ├── plans/                ← ultra-plan
-├── reviews/              ← ultra-review
+├── reviews/              ← ultra-review（品質レポート）
 ├── qa-reports/           ← ultra-qa
 ├── ship-logs/            ← ultra-ship
 ├── retro-reports/        ← ultra-retro
-└── benchmark-reports/    ← ultra-benchmark
+├── benchmark-reports/    ← ultra-benchmark
+└── design-reviews/       ← ultra-design-review（デザイン監査レポート）
 ```
 
 各スキル実行時に `mkdir -p` で自動作成。

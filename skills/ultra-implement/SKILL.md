@@ -116,6 +116,23 @@ AGENTS.md の自動検出ルールに従ってDB種別を特定（詳細は AGEN
 
 計画の各タスクに対して、厳密にRED → GREEN → REFACTORを実行。
 
+### モジュールパターンの注意（Vanilla JS + Jest）
+
+Vanilla JavaScript プロジェクトで Jest テストを書く場合、`module.exports` はブラウザで `ReferenceError` を引き起こす。**UMD互換パターン**を使用すること:
+
+```javascript
+// ✅ UMD互換 — ブラウザとNode.js両方で動作
+// ファイル末尾に追加:
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { MyClass };
+}
+
+// ❌ ブラウザでエラーになる
+module.exports = { MyClass };
+```
+
+**適用場面**: フレームワーク不使用のHTML+JSプロジェクト。React/Next.js/Vite等のバンドラー使用時は不要。
+
 ### RED — 失敗するテストを書く
 
 ```typescript

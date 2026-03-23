@@ -48,6 +48,7 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 ### 自動遷移
 
 1. **ultra-onboard** → 理解完了 → **ultra-brainstorm** (新規開発時)
+   - **新規プロジェクト（コードベースが存在しない場合）**: ultra-onboard をスキップし、直接 **ultra-brainstorm** に遷移。ultra-onboard は既存コードの理解に特化しており、新規PJでは大半のステップがスキップされるため。
 2. **ultra-brainstorm** → 設計承認 → **ultra-plan**
 3. **ultra-plan** → 計画承認 → **ultra-implement**
 4. **ultra-implement** → 全タスク完了 → **ultra-review**
