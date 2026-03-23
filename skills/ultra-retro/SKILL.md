@@ -1,0 +1,359 @@
+---
+name: ultra-retro
+description: "スプリント/タスク完了後に起動。振り返りを実施し、学びをMemory MCPに永続化する。「振り返り」「レトロ」「何を学んだか」で起動。引数: 7d/14d/30d/24h/compare/global。"
+---
+
+# Ultra Retro — レトロスペクティブ + 学習永続化
+
+> gstack /retro + Memory MCP 永続化の統合
+
+## 起動条件
+
+- ultra-ship 完了後
+- 「振り返りしよう」「何がうまくいった？」
+- スプリント/プロジェクト区切り時
+
+## 引数
+
+- `/retro` — デフォルト: 7日間
+- `/retro 24h` — 過去24時間
+- `/retro 14d` — 過去14日間
+- `/retro 30d` — 過去30日間
+- `/retro compare` — 今回 vs 前回の同期間比較
+- `/retro global` — 複数リポジトリ横断レトロ（7d デフォルト）
+- `/retro global 14d` — globalレトロ + 期間指定
+
+**`global` が指定された場合**: 通常の Step 1-7 をスキップし、[Global Retrospective](#global-retrospective) セクションに進む。
+
+## Step 1: データ収集
+
+### 1.1 時間ウィンドウ計算
+
+引数から日数（`d`）/時間（`h`）/週（`w`）を解析。デフォルト7日。
+日/週の場合は**ローカルの深夜0時**に合わせた絶対日時を使用。
+
+```bash
+run_command: git fetch origin --quiet
+run_command: git config user.name
+run_command: git config user.email
+```
+
+### 1.2 Gitデータ取得
+
+以下を全て取得（`<default>` は動的に検出したデフォルトブランチ名）:
+
+```bash
+# デフォルトブランチ名を動的検出
+run_command: git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main"
+
+# コミット一覧（ハッシュ、著者、日時、件名、ファイル統計）
+run_command: git log origin/<default> --since="<window>" --format="%H|%aN|%ae|%ai|%s" --shortstat
+
+# コミット種別ごとの行数
+run_command: git log origin/<default> --since="<window>" --format="COMMIT:%H|%aN" --numstat
+
+# タイムスタンプ（セッション検出用）
+run_command: git log origin/<default> --since="<window>" --format="%at|%aN|%ai|%s" | sort -n
+
+# ホットスポット分析
+run_command: git log origin/<default> --since="<window>" --format="" --name-only | grep -v '^$' | sort | uniq -c | sort -rn | head -15
+
+# 著者ごとのコミット数
+run_command: git shortlog origin/<default> --since="<window>" -sn --no-merges
+```
+
+### 1.3 品質データ
+
+- QAレポート（`docs/ultrapower/qa-reports/`）
+- レビュー結果（`docs/ultrapower/reviews/`）
+
+## Step 2: メトリクスサマリー
+
+```
+メトリクス              値
+─────────               ──────
+コミット数              [N]
+コントリビューター      [N]
+PRマージ数              [N]
+追加行数                [N]
+削除行数                [N]
+Net LOC                 [N]
+テスト行数              [N]
+テスト比率              [N]%
+アクティブ日数          [N]
+検出セッション          [N]
+LOC/セッション時間      [N]
+テスト健全性            [N] テストファイル · [M] 追加
+```
+
+### コントリビューターリーダーボード
+
+```
+コントリビューター   コミット   +/-           主な領域
+あなた (name)             32   +2400/-300    app/
+alice                     12   +800/-150     components/
+```
+
+## Step 3: コミット時間分布
+
+ローカル時間のヒストグラム:
+
+```
+時刻  コミット  ████████████████
+ 09:    4      ████
+ 10:    8      ████████
+ ...
+ 22:   12      ████████████
+```
+
+分析:
+- ピークタイム
+- デッドゾーン
+- 深夜コーディング（22時以降のクラスター）
+
+## Step 4: ワークセッション検出
+
+連続コミット間の **45分** ギャップでセッション区切り:
+
+| 種別 | 基準 |
+|------|------|
+| ディープセッション | 50分以上 |
+| ミディアムセッション | 20-50分 |
+| マイクロセッション | 20分未満 |
+
+```
+=== アクティブコーディング統計 ===
+合計アクティブ時間:    [N]時間
+平均セッション長:      [N]分
+LOC/アクティブ時間:    [N]
+```
+
+## Step 5: コミット種別分析
+
+Conventional Commit プレフィックス（feat/fix/refactor/test/chore/docs）で分類:
+
+```
+feat:     20  (40%)  ████████████████████
+fix:      27  (54%)  ███████████████████████████
+refactor:  2  ( 4%)  ██
+```
+
+⚠️ fix比率が50%超 → 「レビュー段階での品質ゲートを強化検討」
+
+## Step 6: 3カテゴリ振り返り
+
+### 🟢 うまくいったこと（Keep）
+
+```
+KEEP:
+1. [具体的な成功事例 — コミットデータに基づく]
+   → なぜうまくいったか: [分析]
+   → 再現するには: [手順/条件]
+```
+
+### 🟡 改善すべきこと（Improve）
+
+```
+IMPROVE:
+1. [具体的な課題 — メトリクスに基づく]
+   → 影響: [時間ロス/品質低下等]
+   → 提案: [具体的な改善策]
+   → 次回のアクション: [何をいつまでに]
+```
+
+### 🔴 やめるべきこと（Stop）
+
+```
+STOP:
+1. [具体的な悪習/問題パターン — データに基づく]
+   → なぜ発生したか: [根本原因]
+   → 代替手段: [何に置き換えるか]
+```
+
+## Step 7: Ultrapowerメトリクス
+
+```
+ULTRAPOWER METRICS:
+  デバッグループ回数:   [N] (3回制限に達した: [Y/N])
+  QA-Debug サイクル数:  [N] (3ループ制限に達した: [Y/N])
+  セキュリティ検知:     [N] 件
+  TDD違反:             [Y/N]
+```
+
+## Step 8: ストリーク追跡
+
+```bash
+# チームストリーク
+run_command: git log origin/<default> --format="%ad" --date=format:"%Y-%m-%d" | sort -u
+
+# 個人ストリーク
+run_command: git log origin/<default> --author="<user_name>" --format="%ad" --date=format:"%Y-%m-%d" | sort -u
+```
+
+今日から遡って連続コミット日数をカウント:
+- 「チーム出荷ストリーク: [N]日連続」
+- 「あなたの出荷ストリーク: [N]日連続」
+
+## Step 9: 履歴ロード・比較
+
+```
+find_by_name: Pattern="*.json", SearchDirectory="docs/ultrapower/retro-reports/"
+```
+
+見つかったファイルを日付順にソートして最新5件を取得。
+
+前回のレトロが存在する場合、キーメトリクスの差分を表示:
+
+```
+                    前回        今回        差分
+テスト比率:         22%    →    41%         ↑19pp
+セッション数:       10     →    14          ↑4
+LOC/時間:           200    →    350         ↑75%
+fix比率:            54%    →    30%         ↓24pp (改善)
+```
+
+前回なし → 「初回レトロ記録。次回実行でトレンドが見えます。」
+
+## Step 10: 永続化
+
+### JSON スナップショット保存
+
+```bash
+run_command: mkdir -p docs/ultrapower/retro-reports
+```
+
+`docs/ultrapower/retro-reports/{date}-{seq}.json` に保存。
+
+### Memory MCP に永続化
+
+> **重複防止:** 保存前に `mcp_memory_search_nodes` で既存エンティティ（特に ultra-debug が保存した `bug_resolution` タイプ）を検索し、重複を避ける。既存エンティティがあれば `mcp_memory_add_observations` で追記する。
+
+```
+mcp_memory_create_entities:
+  - name: "[プロジェクト名]-retro-[日付]"
+    entityType: "retrospective"
+    observations:
+      - "KEEP: [学び1]"
+      - "IMPROVE: [学び2]"
+      - "STOP: [学び3]"
+      - "PATTERN: [発見したパターン]"
+      - "METRICS: コミット[N], テスト比率[N]%, ストリーク[N]d"
+
+mcp_memory_create_relations:
+  - from: "[プロジェクト名]-retro-[日付]"
+    to: "[プロジェクト名]"
+    relationType: "retrospective_of"
+```
+
+### アーキテクチャ決定の永続化
+
+```
+mcp_memory_create_entities:
+  - name: "[決定名]"
+    entityType: "architecture_decision"
+    observations:
+      - "決定: [何を決めたか]"
+      - "理由: [なぜその選択か]"
+      - "代替案: [却下した案]"
+      - "トレードオフ: [引き受けたリスク]"
+```
+
+## Step 11: ナラティブ出力
+
+```
+一行サマリー:
+Week of [date]: [N] commits, [X]k LOC, [Y]% tests | Streak: [N]d
+
+=== Engineering Retro: [date range] ===
+
+### サマリーテーブル（Step 2）
+### トレンド比較（Step 9）
+### 時間・セッションパターン（Steps 3-4）
+### 出荷速度（Step 5）
+### コード品質シグナル
+### フォーカス＆ハイライト
+### 今週のTOP 3
+### 改善すべき3項目
+### 来週の3つの習慣
+```
+
+## Step 12: 完了レポート
+
+```
+╔══════════════════════════════════════════╗
+║  ULTRA-RETRO 完了                        ║
+║  STATUS: [DONE / DONE_WITH_CONCERNS]     ║
+╠══════════════════════════════════════════╣
+║  KEEP:     [N] 件                        ║
+║  IMPROVE:  [N] 件                        ║
+║  STOP:     [N] 件                        ║
+║  ストリーク: [N]d 連続                    ║
+║  学習永続化: Memory MCP に [N] 件保存     ║
+║  次回アクション: [N] 件                   ║
+╚══════════════════════════════════════════╝
+```
+
+---
+
+## Global Retrospective
+
+`/retro global` 実行時のフロー。
+
+### Global Step 1: リポジトリ発見
+
+```bash
+# ホームディレクトリ以下のgitリポジトリを探索（デフォルトパス）
+run_command: find ~/Desktop ~/Projects ~/repos ~/work -maxdepth 3 -name ".git" -type d 2>/dev/null | head -20
+```
+
+**フォールバック:** 上記のデフォルトパスでリポジトリが見つからない場合、ユーザーにプロジェクトディレクトリのパスを質問する。
+
+**補足:** `find_by_name` はワークスペース内限定のため、ホームディレクトリ横断検索には `run_command` を使用。
+
+### Global Step 2: 各リポのGitデータ取得
+
+発見した各リポジトリに対して:
+
+```bash
+run_command: git -C <path> log --since="<window>" --format="%H|%aN|%ai|%s" --shortstat
+run_command: git -C <path> shortlog --since="<window>" -sn --no-merges
+```
+
+### Global Step 3: グローバルストリーク
+
+全リポの日付を統合し、連続出荷日数を計算。
+
+### Global Step 4: コンテキストスイッチ分析
+
+日ごとに何リポにコミットしたか:
+- 平均リポ/日
+- 最大リポ/日
+- 集中日（1リポ）vs 分散日（3+リポ）
+
+### Global Step 5: シェアラブルパーソナルカード
+
+```
+╔═══════════════════════════════════════════════════════════════
+║  [ユーザー名] — Week of [date]
+╠═══════════════════════════════════════════════════════════════
+║
+║  [N] commits across [M] projects
+║  +[X]k LOC added · [Y]k deleted · [Z]k net
+║  [N]-day shipping streak 🔥
+║
+║  PROJECTS
+║  ─────────────────────────────────────────────────────────
+║  [repo_name]        [N] commits    +[X]k LOC    [solo/team]
+║
+║  TOP WORK
+║  • [テーマ1]
+║  • [テーマ2]
+║  • [テーマ3]
+║
+║  Powered by Ultrapower
+╚═══════════════════════════════════════════════════════════════
+```
+
+### Global Step 6: メモリ永続化 + レポート保存
+
+JSON + Memory MCP に保存。
