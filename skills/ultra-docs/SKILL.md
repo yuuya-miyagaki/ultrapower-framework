@@ -58,6 +58,30 @@ find_by_name: Pattern="*.md", MaxDepth=2, Excludes=[".git", "node_modules", "doc
 各ドキュメントファイルを読み、diffと照合:
 
 ### README.md
+
+**README.md が存在しない場合 → テンプレート自動生成を提案:**
+
+```markdown
+# [プロジェクト名]（package.json の name / ディレクトリ名から自動取得）
+
+[package.json の description / 1行説明を挿入]
+
+## セットアップ
+
+（package.json の scripts / 技術スタック情報から自動生成）
+
+## 使い方
+
+（主要機能の簡潔な説明）
+
+## 開発
+
+（テスト実行方法、ビルド手順）
+```
+
+情報ソース: `package.json`, `Cargo.toml`, `go.mod`, ディレクトリ構造から自動収集。
+
+**README.md が存在する場合 → 通常の監査:**
 - diffで追加された機能・ケイパビリティが記載されているか？
 - インストール・セットアップ手順が変更と一致しているか？
 - 例、デモ、使用方法の説明は有効か？

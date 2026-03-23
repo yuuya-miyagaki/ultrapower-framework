@@ -102,6 +102,32 @@ view_file → README.md
 - AIで実装コストが低い場合、常に完全版（スコア高い方）を推奨
 - 「80%で十分」は旧来思考。AIでは100%が数分多いだけ
 
+### Step 4.5: プロジェクト初期ファイル生成（新規PJのみ）
+
+新規プロジェクトの場合、設計文書作成前にプロジェクト基盤ファイルを生成：
+
+```bash
+# .gitignore（node_modules等の誤追跡を防止）
+run_command: |
+  cat > .gitignore << 'EOF'
+  node_modules/
+  dist/
+  .env
+  .env.local
+  .DS_Store
+  *.log
+  coverage/
+  EOF
+```
+
+**重要**: `.gitignore` は初回コミット前に必ず作成すること。後から追加しても
+既にステージされたファイルは追跡から除外されない（`git rm --cached` が必要）。
+
+検出ルール:
+- `package.json` が存在しない → 新規PJと判断
+- `.gitignore` が存在しない → 自動生成を提案
+- `.git/` が存在しない → `git init` も提案
+
 ### Step 5: 設計文書作成
 
 承認されたアプローチを文書化：
