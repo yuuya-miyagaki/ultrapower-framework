@@ -7,9 +7,9 @@ description: "レビュー通過後に起動。自動テスト + Playwright MCP 
 
 ## 前提ルール（AGENTS.md「5つの鉄則」参照）
 
-```
+```text
 検証コマンドの出力なしに「動作する」と言ってはならない
-```
+```text
 
 「多分動く」「はず」「おそらく」はすべて虚偽。コマンドを実行し、出力を読み、結果を報告する。
 
@@ -18,7 +18,7 @@ description: "レビュー通過後に起動。自動テスト + Playwright MCP 
 ```bash
 # フルテストスイート実行
 npm test  # / pytest / cargo test / go test ./...
-```
+```yaml
 
 確認事項:
 - 全テスト通過
@@ -62,7 +62,7 @@ run_command: npm run dev  # or 検出したコマンド
 
 # 3. 起動確認（ポート番号取得）
 # 出力から localhost:XXXX を確認
-```
+```text
 
 > **ポート番号**: デフォルトの 3000 / 5173 / 8080 等を確認。競合時は別ポートを使用。
 
@@ -72,7 +72,7 @@ Playwright MCP でユーザーフローを検証：
 
 ### ユーザーフロー検証
 
-```
+```yaml
 1. mcp_playwright_browser_navigate → http://localhost:3000
 2. mcp_playwright_browser_snapshot → インタラクティブ要素を確認
 3. mcp_playwright_browser_fill_form → テストデータ入力
@@ -80,44 +80,44 @@ Playwright MCP でユーザーフローを検証：
 4. mcp_playwright_browser_click → 送信ボタン（refを指定）
 5. mcp_playwright_browser_snapshot → 変化を確認（ダッシュボード表示等）
 6. mcp_playwright_browser_take_screenshot → 結果をスクリーンショット
-```
+```text
 
 ### レスポンシブテスト（AGENTS.md 定義に準拠）
 
-```
+```text
 1. mcp_playwright_browser_resize(375, 812) → モバイル
 2. mcp_playwright_browser_take_screenshot → mobile.png
 3. mcp_playwright_browser_resize(768, 1024) → タブレット
 4. mcp_playwright_browser_take_screenshot → tablet.png
 5. mcp_playwright_browser_resize(1920, 1080) → デスクトップ
 6. mcp_playwright_browser_take_screenshot → desktop.png
-```
+```text
 
 ### エラーチェック
 
-```
+```yaml
 1. mcp_playwright_browser_console_messages(level: "error") → コンソールエラー
 2. mcp_playwright_browser_network_requests(includeStatic: false) → ネットワーク失敗
-```
+```text
 
 ### フォームバリデーションテスト
 
-```
+```text
 1. mcp_playwright_browser_click → 空でsubmitボタンをクリック
 2. mcp_playwright_browser_snapshot → エラーメッセージ表示を確認
 3. mcp_playwright_browser_fill_form → 正しいデータ入力
 4. mcp_playwright_browser_click → 再送信
 5. mcp_playwright_browser_snapshot → エラー消去・成功状態を確認
-```
+```text
 
 ## Step 4: パフォーマンスベンチマーク（オプション）
 
 簡易的なページロード時間を確認。**詳細な分析が必要な場合は ultra-benchmark スキルを使用**（Core Web Vitals、バンドルサイズ、回帰検出等に対応）。
 
-```
+```text
 mcp_playwright_browser_navigate → 対象ページ
 mcp_playwright_browser_evaluate → performance.getEntriesByType('navigation')[0]?.loadEventEnd
-```
+```text
 
 ## Step 5: 検証チェックリスト
 
@@ -165,12 +165,12 @@ QA中にバグを発見した場合：
 
 ```bash
 run_command: mkdir -p docs/ultrapower/qa-reports
-```
+```text
 
 QAレポートを `docs/ultrapower/qa-reports/YYYY-MM-DD-qa-report.md` に保存。
 ultra-ship が PR本文に含めるため、ファイルとして永続化が必要。
 
-```
+```text
 ╔══════════════════════════════════════════╗
 ║  ULTRA-QA 完了                           ║
 ║  STATUS: [DONE / DONE_WITH_CONCERNS]     ║

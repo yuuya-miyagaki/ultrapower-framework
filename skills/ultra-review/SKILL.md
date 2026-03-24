@@ -38,7 +38,7 @@ run_command: git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^ref
 
 run_command: git diff <default>...HEAD --stat
 run_command: git log <default>..HEAD --oneline
-```
+```text
 
 `<default>` は上記で検出したデフォルトブランチ名。変更の全体像を把握し、タッチされたファイルを全て読む。
 
@@ -56,11 +56,11 @@ run_command: git log <default>..HEAD --oneline
 | スコープ外の実装がない（YAGNI） | 計画にない機能が追加されていないか |
 | エッジケースが網羅されている | 仕様記載のエッジケース vs テスト |
 
-```
+```yaml
 Pass 1 判定:
   ✅ PASS → Pass 2 に進む
   ❌ FAIL → 不一致箇所をリスト化し、修正してから再レビュー
-```
+```text
 
 ### Pass 2: コード品質チェック（Code Quality）
 
@@ -95,7 +95,7 @@ Pass 1 判定:
 
 ### 外部レビューを受けた場合の対応
 
-```
+```yaml
 フィードバック受信時:
 1. READ: 全フィードバックを反応せずに読む
 2. UNDERSTAND: 要件を自分の言葉で再述（or 質問）
@@ -103,7 +103,7 @@ Pass 1 判定:
 4. EVALUATE: このコードベースにとって技術的に正しいか？
 5. RESPOND: 技術的確認 or 理由付きプッシュバック
 6. IMPLEMENT: 1つずつ実装、各々テスト
-```
+```javascript
 
 ### 禁止レスポンス
 
@@ -113,12 +113,12 @@ Pass 1 判定:
 
 ### YAGNI チェック
 
-```
+```bash
 IF reviewer suggests "implementing properly":
   → grep codebase for actual usage
   → IF unused: "This endpoint isn't called. Remove it (YAGNI)?"
   → IF used: Then implement properly
-```
+```text
 
 ### プッシュバック基準
 
@@ -131,7 +131,7 @@ IF reviewer suggests "implementing properly":
 
 ### 実装順序
 
-```
+```text
 1. 不明点を全て先に確認
 2. 実装順序:
    - ブロッキング問題（破壊・セキュリティ）
@@ -139,7 +139,7 @@ IF reviewer suggests "implementing properly":
    - 複雑修正（リファクタリング・ロジック）
 3. 各修正を個別にテスト
 4. リグレッションなしを確認
-```
+```text
 
 ## Step 5: 品質ゲート
 
@@ -154,7 +154,7 @@ IF reviewer suggests "implementing properly":
 
 ## Step 6: 完了レポート
 
-```
+```text
 ╔══════════════════════════════════════════╗
 ║  ULTRA-REVIEW 完了                       ║
 ║  STATUS: [DONE / DONE_WITH_CONCERNS]     ║

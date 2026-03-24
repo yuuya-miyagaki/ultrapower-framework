@@ -30,7 +30,7 @@ description: "常時アクティブ。ユーザーの入力とコンテキスト
 
 ## フェーズ遷移ルール
 
-```
+```text
 onboard → brainstorm → plan → implement → review → qa → ship → retro
                                   ↑                       |
                                   └──── debug ←───────────┘

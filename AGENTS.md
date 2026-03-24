@@ -82,7 +82,7 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 ║  REASON: [1-2行の説明]                   ║
 ║  EVIDENCE: [検証コマンド出力 or リンク]   ║
 ╚══════════════════════════════════════════╝
-```
+```text
 
 **ルール**: DONE 以外のステータスでは必ず REASON を記載すること。
 
@@ -107,14 +107,14 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 
 ### 警告フォーマット
 
-```
+```yaml
 ⚠️ 破壊的操作を検出:
   コマンド: [検出されたコマンド]
   リスク:   [何が起きうるか]
   推奨:     [より安全な代替案]
 
 実行しますか？ (y/N)
-```
+```text
 
 **ユーザーの明示的承認なしに破壊的コマンドを実行しない。**
 
@@ -132,9 +132,9 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 2. 「修正しますか？」とユーザーに確認
 3. **暗黙的に無視しない** — 発見した問題を黙って見過ごすのは禁止
 
-```
+```yaml
 例: 「⚡ テスト実行中に deprecation warning を3件検出しました（React 19 対応が必要）。今修正しますか？」
-```
+```text
 
 ---
 
@@ -155,23 +155,23 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 
 上記のシグナルがいずれも検出されず、プロジェクトがDBを使用しない場合:
 
-```
+```yaml
 DB BACKEND: None
 スキップ: DB関連のステップ（マイグレーション、セキュリティルール等）
 対象: 静的サイト、CLIツール、ライブラリ、フロントエンドのみPJ等
-```
+```text
 
 **アクション**: ultra-onboard / ultra-implement / ultra-ship でDB関連ステップをスキップ。
 
 ### Supabase プロジェクト
 
-```
+```yaml
 DB操作:      Supabase Dashboard or supabase CLI
 認証:        Supabase Auth (@supabase/supabase-js)
 ストレージ:  Supabase Storage
 マイグレーション: supabase/migrations/
 デプロイ:    Vercel / Cloudflare (フロント) + Supabase (バックエンド)
-```
+```text
 
 #### Supabase マイグレーション自動化（推奨）
 
@@ -190,7 +190,7 @@ npx supabase db push                 # リモートに適用
 # supabase/migrations/ にSQLファイルを配置
 # Supabase Dashboard SQL Editor で手動実行
 # ⚠️ 実行後、必ず結果をスクリーンショットで記録
-```
+```text
 
 #### Supabase キーバリデーション
 
@@ -203,13 +203,13 @@ npx supabase db push                 # リモートに適用
 
 ### Firebase プロジェクト
 
-```
+```yaml
 DB操作:      mcp_firebase-mcp-server_* ツール群
 認証:        Firebase Auth (mcp_firebase-mcp-server_firebase_init → auth)
 ストレージ:  Firebase Storage
 マイグレーション: Firestore Security Rules
 デプロイ:    mcp_firebase-mcp-server_firebase_init → hosting
-```
+```text
 
 #### Firebase セットアップ自動化
 
@@ -229,7 +229,7 @@ mcp_firebase-mcp-server_firebase_init:
 # 3. セキュリティルール確認
 mcp_firebase-mcp-server_firebase_get_security_rules:
   type: "firestore"
-```
+```text
 
 ### Firebase MCP ツール一覧
 
@@ -259,7 +259,7 @@ export async function getDB() {
   const { SupabaseAdapter } = await import('./adapters/supabase-adapter.js');
   return new SupabaseAdapter();
 }
-```
+```text
 
 #### 統一 API 契約
 
@@ -275,7 +275,7 @@ db.from('table').select('*').eq('field', value).order('created_at', { ascending:
 db.from('table').insert(record)
 db.from('table').update(record).eq('id', docId)
 db.from('table').delete().eq('id', docId)
-```
+```text
 
 #### 切替方法
 
@@ -283,7 +283,7 @@ db.from('table').delete().eq('id', docId)
 # .env
 VITE_DB_PROVIDER=supabase  # デフォルト
 VITE_DB_PROVIDER=firebase  # Firebase に切替
-```
+```text
 
 **実績**: StudyFlow PJで検証済み — 83テスト全PASS、ページコード変更なしで切替可能
 
@@ -324,10 +324,10 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 
 実装・デバッグ時にライブラリの最新ドキュメントを自動参照:
 
-```
+```text
 1. mcp_context7_resolve-library-id → ライブラリID取得
 2. mcp_context7_query-docs → 具体的な質問でドキュメント取得
-```
+```text
 
 **使用タイミング**: ultra-brainstorm / ultra-plan / ultra-implement / ultra-debug / ultra-onboard
 
@@ -335,21 +335,21 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 
 セッション間でプロジェクト知識を保持:
 
-```
+```text
 mcp_memory_create_entities   → 新規知識の保存
 mcp_memory_search_nodes      → 過去の知識検索
 mcp_memory_add_observations  → 既存知識の更新
 mcp_memory_create_relations  → 知識間の関係記録
-```
+```text
 
 **使用タイミング**: ultra-onboard / ultra-retro / ultra-debug
 
 ### Draw.io MCP（アーキテクチャ図）
 
-```
+```text
 mcp_drawio_open_drawio_mermaid → Mermaid記法で図生成
 mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
-```
+```text
 
 **使用タイミング**: ultra-plan / ultra-onboard
 
@@ -366,7 +366,7 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 
 ## レスポンシブテスト手順
 
-```
+```text
 1. mcp_playwright_browser_navigate → 対象URL
 2. mcp_playwright_browser_resize → {width: 1920, height: 1080}  # Desktop
 3. mcp_playwright_browser_take_screenshot → desktop.png
@@ -374,7 +374,7 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 5. mcp_playwright_browser_take_screenshot → tablet.png
 6. mcp_playwright_browser_resize → {width: 375, height: 812}    # Mobile
 7. mcp_playwright_browser_take_screenshot → mobile.png
-```
+```text
 
 ---
 
@@ -410,9 +410,9 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 
 ## スキルパス解決
 
-```
+```text
 ultrapower/skills/{skill-name}/SKILL.md
-```
+```text
 
 スキル参照は「ultrapower:{skill-name}」形式。
 
@@ -420,7 +420,7 @@ ultrapower/skills/{skill-name}/SKILL.md
 
 ## アーティファクト保存場所
 
-```
+```text
 docs/ultrapower/
 ├── specs/                ← ultra-brainstorm（設計仕様書）
 ├── designs/              ← ultra-brainstorm / ultra-design-system
@@ -431,7 +431,7 @@ docs/ultrapower/
 ├── retro-reports/        ← ultra-retro
 ├── benchmark-reports/    ← ultra-benchmark
 └── design-reviews/       ← ultra-design-review（デザイン監査レポート）
-```
+```bash
 
 各スキル実行時に `mkdir -p` で自動作成。
 
@@ -439,7 +439,7 @@ docs/ultrapower/
 
 ## 完了状態レポート形式
 
-```
+```text
 ╔══════════════════════════════════════════╗
 ║  ULTRAPOWER — [フェーズ名] 完了          ║
 ╠══════════════════════════════════════════╣

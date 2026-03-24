@@ -66,7 +66,7 @@ ultra-brainstorm で設計が承認された時に起動。
 
 ### 検証コマンド
 - `[テスト実行コマンド]`
-```
+```text
 
 ## Step 2: CEO戦略レビュー（4モードスコープ管理）
 
@@ -78,16 +78,16 @@ ultra-brainstorm で設計が承認された時に起動。
 
 ### 2B. Dream State Mapping
 
-```
+```text
   現在の状態           →  この計画     →  12ヶ月後の理想
   [describe]                [delta]          [target]
-```
+```text
 
 ### 2C. Implementation Alternatives（必須）
 
 最低2つの代替案を提示:
 
-```
+```yaml
 APPROACH A: [名前]
   概要:   [1-2文]
   工数:   [S/M/L/XL]
@@ -98,7 +98,7 @@ APPROACH A: [名前]
 
 APPROACH B: [名前]
   ...
-```
+```text
 
 - 1つは「最小実行可能版」（最少ファイル、最小差分）
 - 1つは「理想アーキテクチャ版」（長期的最適）
@@ -122,12 +122,12 @@ APPROACH B: [名前]
 
 ### 2E. Temporal Interrogation（EXPANSION/SELECTIVE/HOLDで実行）
 
-```
+```yaml
   HOUR 1 (基礎):     実装者が知るべきことは？
   HOUR 2-3 (核心):   どの曖昧さにぶつかるか？
   HOUR 4-5 (統合):   何に驚くか？
   HOUR 6+ (仕上げ):  何を事前に計画しておきたかったか？
-```
+```text
 
 ## Step 3: Engレビュー（認知パターン15原則適用）
 
@@ -155,28 +155,28 @@ APPROACH B: [名前]
 
 **Draw.io MCP でアーキテクチャ図を自動生成:**
 
-```
+```mermaid
 mcp_drawio_open_drawio_mermaid:
   content: |
     graph TD
       subgraph [コンポーネント名]
         [ノード定義]
       end
-```
+```yaml
 
 **Context7 で技術選定を検証:**
 
-```
+```yaml
 mcp_context7_resolve-library-id: [採用予定ライブラリ]
 mcp_context7_query-docs: ["ベストプラクティス" or "既知の問題"]
-```
+```text
 
 **Boring by Default**: 実績のある技術か？イノベーショントークンを賢く使っているか？
 **Reversibility**: Feature flag? canary? ロールバック手順は？
 
 ### 3-2. エラー＆レスキューマップ
 
-```
+```python
 METHOD/CODEPATH      | WHAT CAN GO WRONG    | EXCEPTION CLASS
 ---------------------|----------------------|----------------
                      |                      |
@@ -184,7 +184,7 @@ METHOD/CODEPATH      | WHAT CAN GO WRONG    | EXCEPTION CLASS
 EXCEPTION CLASS      | RESCUED? | RESCUE ACTION    | USER SEES
 ---------------------|----------|------------------|----------
                      |          |                  |
-```
+```text
 
 GAP = RESCUED=N → **CRITICAL GAP**
 
@@ -205,12 +205,12 @@ GAP = RESCUED=N → **CRITICAL GAP**
 
 ### 3-5. テストレビュー
 
-```
+```yaml
 NEW UX FLOWS:    [各新インタラクション]
 NEW DATA FLOWS:  [各新データパス]
 NEW CODEPATHS:   [各新分岐/条件]
 NEW ERROR PATHS: [各新エラーパス]
-```
+```yaml
 
 各項目:
 - 何型テスト? (Unit/Integration/E2E)
@@ -248,17 +248,17 @@ UI/UXスコープがある場合のみ実行。
 ユーザーが最初・2番目・3番目に見るものは？Constraint worship — 3つだけ見せるなら？
 
 ### Pass 2: インタラクション状態カバレッジ (0-10)
-```
+```text
 FEATURE          | LOADING | EMPTY | ERROR | SUCCESS | PARTIAL
 -----------------|---------|-------|-------|---------|--------
-```
+```text
 空状態は機能 — 温かさ、主要アクション、コンテキスト。
 
 ### Pass 3: ユーザージャーニー＆感情弧 (0-10)
-```
+```text
 STEP | USER DOES        | USER FEELS      | PLAN SPECIFIES?
 -----|------------------|-----------------|----------------
-```
+```text
 時間軸設計: 5秒（直感）、5分（行動）、5年（関係）
 
 ### Pass 4: AIスロップリスク (0-10)
@@ -275,12 +275,12 @@ DESIGN.mdがあれば照合。なければギャップフラグ。
 - カラーコントラスト
 
 ### Pass 7: 未解決の設計決定
-```
+```text
 DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 -----------------------------|---------------------------
 空状態のデザインは？          | エンジニアが「アイテムなし」を出荷
 モバイルナビパターンは？      | デスクトップナビがハンバーガーの裏に
-```
+```text
 
 ## Step 5: 計画承認
 
@@ -288,7 +288,7 @@ DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 
 ### 完了サマリー
 
-```
+```text
 ╔══════════════════════════════════════════════════════════════╗
 ║  ULTRA-PLAN — 完了サマリー                                    ║
 ║  STATUS: [DONE / DONE_WITH_CONCERNS]                         ║
@@ -298,11 +298,11 @@ DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 ║  Design Review: Score: ___/10 → ___/10 (UI scope: Y/N)     ║
 ║  Lake Score:    X/Y recommendations chose complete option   ║
 ╚══════════════════════════════════════════════════════════════╝
-```
+```text
 
 ## AskUserQuestion ルール（4段構造）
 
-```
+```yaml
 1. 再接地: 「現在の理解では [X] ですが、合っていますか？」
 2. 平易化: 技術用語を避け、要点を1文で
 3. 推奨:   「[Y] を推奨します。理由: [Z]」
