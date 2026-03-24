@@ -22,6 +22,7 @@
 | ultra-design-review | デザイン監査・自動修正 |
 | ultra-docs | ドキュメント同期・整合性チェック |
 | ultra-second-opinion | Claude Code二次意見ブリッジ |
+| ultra-parallel | 並列実行・サブエージェント・バックグラウンド |
 | ultrapower-workflow | 常時（自動ルーティング） |
 
 **1%でも関連するスキルがあればトリガーすること。**
