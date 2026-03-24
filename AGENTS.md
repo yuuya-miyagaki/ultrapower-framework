@@ -242,6 +242,50 @@ mcp_firebase-mcp-server_firebase_get_security_rules:
 | セキュリティルール | `mcp_firebase-mcp-server_firebase_get_security_rules` |
 | 環境設定 | `mcp_firebase-mcp-server_firebase_update_environment` |
 
+### デュアルDB 抽象化パターン（推奨）
+
+Supabase と Firebase を同一プロジェクトで切替可能にする Provider Pattern:
+
+```javascript
+// db.js — エントリーポイント
+const DB_PROVIDER = import.meta.env.VITE_DB_PROVIDER || 'supabase';
+
+export async function getDB() {
+  if (DB_PROVIDER === 'firebase') {
+    const { FirebaseAdapter } = await import('./adapters/firebase-adapter.js');
+    return new FirebaseAdapter();
+  }
+  const { SupabaseAdapter } = await import('./adapters/supabase-adapter.js');
+  return new SupabaseAdapter();
+}
+```
+
+#### 統一 API 契約
+
+```javascript
+// 認証
+db.auth.getUser()        // → User | null
+db.auth.signUp(email, pw)
+db.auth.signIn(email, pw)
+db.auth.signOut()
+
+// データ操作（Supabase互換チェーンAPI）
+db.from('table').select('*').eq('field', value).order('created_at', { ascending: false })
+db.from('table').insert(record)
+db.from('table').update(record).eq('id', docId)
+db.from('table').delete().eq('id', docId)
+```
+
+#### 切替方法
+
+```bash
+# .env
+VITE_DB_PROVIDER=supabase  # デフォルト
+VITE_DB_PROVIDER=firebase  # Firebase に切替
+```
+
+**実績**: StudyFlow PJで検証済み — 83テスト全PASS、ページコード変更なしで切替可能
+
 ---
 
 ## Antigravity MCP ツール統合
