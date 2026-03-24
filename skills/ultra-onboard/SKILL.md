@@ -89,9 +89,31 @@ mcp_drawio_open_drawio_mermaid:
 
 AGENTS.md の自動検出ルールに従い、DB種別を特定（詳細は AGENTS.md「DB バックエンド選択」セクション参照）:
 
-```
+```text
 DB BACKEND:
   Type: [Supabase / Firebase / PostgreSQL / MySQL / SQLite / MongoDB / None]
+```
+
+**デュアルDB構成の検出:**
+
+```bash
+# db.js / adapters/ ディレクトリの存在確認
+grep_search: "getDB\|DB_PROVIDER\|adapter"
+find_by_name: Pattern="*-adapter.js", SearchDirectory="src/adapters"
+```
+
+以下のパターンが見つかれば **デュアルDB構成**:
+
+- `src/db.js` — Provider ファクトリ
+- `src/adapters/` — Adapter 群
+- `.env` に `VITE_DB_PROVIDER` 環境変数
+
+```text
+DB BACKEND:
+  Type: Dual (Supabase + Firebase)
+  Factory: src/db.js
+  Adapters: src/adapters/supabase-adapter.js, src/adapters/firebase-adapter.js
+  Active: VITE_DB_PROVIDER=[current value]
 ```
 
 検出結果を記録し、以降のスキル（ultra-implement, ultra-ship等）で活用。

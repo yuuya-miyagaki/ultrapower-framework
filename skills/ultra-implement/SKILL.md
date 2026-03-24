@@ -271,6 +271,41 @@ npm run test:coverage 2>/dev/null || true
 ╚══════════════════════════════════════════╝
 ```
 
+## デュアルDB 実装パターン
+
+プロジェクトが Supabase + Firebase のデュアルDB構成の場合:
+
+### 1. Adapter 実装順序
+
+```
+1. Provider Interface 定義 (db.js)
+2. SupabaseAdapter テスト → 実装
+3. FirebaseAdapter テスト → 実装
+4. ページコードの import 切替 (supabase → getDB())
+5. テストのモック切替 (supabase.js → db.js)
+```
+
+### 2. テストモック切替パターン
+
+```javascript
+// jest.mock 内で参照するオブジェクトはファクトリ外で定義
+const mockDB = {
+  auth: { getUser: jest.fn() },
+  from: jest.fn(),
+};
+
+jest.mock('../src/db.js', () => ({
+  getDB: jest.fn(() => Promise.resolve(mockDB)),
+  getAuth: jest.fn(() => Promise.resolve(mockDB.auth)),
+}));
+```
+
+### 3. 環境変数切替
+
+```bash
+VITE_DB_PROVIDER=supabase  # or firebase
+```
+
 ## レッドフラグ
 
 **絶対禁止:**
