@@ -173,6 +173,33 @@ DB操作:      Supabase Dashboard or supabase CLI
 デプロイ:    Vercel / Cloudflare (フロント) + Supabase (バックエンド)
 ```
 
+#### Supabase マイグレーション自動化（推奨）
+
+手動SQL Editorではなく、マイグレーションファイルで管理:
+
+```bash
+# 1. マイグレーションファイル作成
+mkdir -p supabase/migrations
+# ファイル名: XXX_description.sql (例: 001_init.sql, 002_add_tags.sql)
+
+# 2. Supabase CLI が利用可能な場合
+npx supabase migration new init     # マイグレーション作成
+npx supabase db push                 # リモートに適用
+
+# 3. CLI が使えない場合の手順
+# supabase/migrations/ にSQLファイルを配置
+# Supabase Dashboard SQL Editor で手動実行
+# ⚠️ 実行後、必ず結果をスクリーンショットで記録
+```
+
+#### Supabase キーバリデーション
+
+`.env` のAPI キーは起動時にバリデーションすること:
+- JWTフォーマット確認（header.payload.signature の3パート）
+- issuer が `supabase` であること
+- バッククォート・不正文字の混入チェック
+- 不正時はコンソールエラー + UIトースト通知
+
 ### Firebase プロジェクト
 
 ```
@@ -181,6 +208,26 @@ DB操作:      mcp_firebase-mcp-server_* ツール群
 ストレージ:  Firebase Storage
 マイグレーション: Firestore Security Rules
 デプロイ:    mcp_firebase-mcp-server_firebase_init → hosting
+```
+
+#### Firebase セットアップ自動化
+
+```bash
+# 1. プロジェクト設定
+mcp_firebase-mcp-server_firebase_update_environment:
+  project_dir: [プロジェクトディレクトリ]
+  active_project: [Firebase プロジェクトID]
+
+# 2. サービス初期化
+mcp_firebase-mcp-server_firebase_init:
+  features:
+    firestore: { location_id: "asia-northeast1" }
+    auth: { providers: { emailPassword: true } }
+    hosting: { public_directory: "dist" }
+
+# 3. セキュリティルール確認
+mcp_firebase-mcp-server_firebase_get_security_rules:
+  type: "firestore"
 ```
 
 ### Firebase MCP ツール一覧
