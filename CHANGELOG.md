@@ -1,5 +1,28 @@
 # Changelog — Ultrapower
 
+## v4.1.1 (2026-03-24)
+
+### レトロ改善（StudyFlow PJ 振り返りから）
+
+1. **テスト比率向上**: 39 → 71テスト (82%増)
+   - pages/ テスト追加 (dashboard, bookmarks, notes, settings)
+   - キーバリデーションテスト追加 (supabase-config)
+
+2. **キーバリデーション標準化**: `supabase.js` にJWTチェック追加
+   - 3パート構造チェック
+   - issuer `supabase` チェック
+   - バッククォート・不正文字検出
+   - UIトースト通知
+
+3. **DB自動化手順**: AGENTS.md 更新
+   - Supabase CLI マイグレーション手順追加
+   - Firebase MCP セットアップ自動化手順追加
+
+### ドキュメント整備
+
+- **README.md**: 全面改訂（クイックスタート、典型フロー、実践結果）
+- **GUIDE.md**: 新規作成（全15スキルの使い方ガイド + Tips + 安全ガードレール）
+
 ## v4.1.0 (2026-03-24)
 
 ### テスト検証で発見・適用した改善（8件）
