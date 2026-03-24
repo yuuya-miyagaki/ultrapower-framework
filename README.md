@@ -108,13 +108,13 @@ mcp_firebase-mcp-server_firebase_init:
 Ultrapower v4.1 で構築した個人ナレッジハブ「StudyFlow」の実績:
 
 | 指標 | 値 |
-|------|-----|
+| ---- | ---- |
 | 実装時間 | 74分 (2セッション) |
-| テスト | 71件 100% PASS |
+| テスト | 83件 100% PASS |
 | バンドル (gzip) | 60 KB |
 | TTFB | 263 ms |
 | セキュリティ | A評価 (本番脆弱性0) |
-| 本番URL | https://studyflow-two-fawn.vercel.app |
+| 本番URL | [StudyFlow](https://studyflow-two-fawn.vercel.app) |
 
 ## v4 新機能
 

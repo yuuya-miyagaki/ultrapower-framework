@@ -1,5 +1,19 @@
 # Changelog — Ultrapower
 
+## v4.2.0 (2026-03-24)
+
+### デュアルDB 抽象化パターン
+
+- **AGENTS.md**: Provider Pattern テンプレート追加（db.js → Adapter）
+- **統一API契約**: auth(getUser/signUp/signIn/signOut) + CRUD(from/select/insert/update/delete)
+- **切替方法**: `VITE_DB_PROVIDER=supabase|firebase` 環境変数
+- **StudyFlow 実証**: 全ページ接続完了、83テスト PASS
+
+### lint 修正
+
+- **README.md**: テーブルスタイル統一 + ベアURL修正
+- **AGENTS.md**: リスト前空行追加
+
 ## v4.1.1 (2026-03-24)
 
 ### レトロ改善（StudyFlow PJ 振り返りから）

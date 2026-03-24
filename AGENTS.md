@@ -195,6 +195,7 @@ npx supabase db push                 # リモートに適用
 #### Supabase キーバリデーション
 
 `.env` のAPI キーは起動時にバリデーションすること:
+
 - JWTフォーマット確認（header.payload.signature の3パート）
 - issuer が `supabase` であること
 - バッククォート・不正文字の混入チェック
