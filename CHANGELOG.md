@@ -1,5 +1,10 @@
 # Changelog — Ultrapower
 
+> バージョニング基準: [SemVer](https://semver.org/lang/ja/) 準拠
+> - **Major** (X.0.0): 破壊的変更（スキルインターフェース変更、AGENTS.md大規模改定）
+> - **Minor** (x.Y.0): 機能追加（新スキル、新ステップ、新機能）
+> - **Patch** (x.y.Z): バグ修正、ドキュメント修正、lint修正
+
 ## v4.2.0 (2026-03-24)
 
 ### デュアルDB 抽象化パターン
@@ -9,10 +14,25 @@
 - **切替方法**: `VITE_DB_PROVIDER=supabase|firebase` 環境変数
 - **StudyFlow 実証**: 全ページ接続完了、83テスト PASS
 
+### 最終監査 — 構造的整合性修正
+
+- **C1**: `ultra-retro` ベアコードブロック4箇所に言語指定追加
+- **C3**: 7スキル（qa/debug/ship/implement/review/benchmark/onboard）に `learned-patterns.md` 参照行追加
+- **M1**: `ultra-parallel` の説明改善（AGENTS.md）
+- **M2**: `GUIDE.md` に `ultra-parallel` スキル追加
+- **M3**: `README.md` スキル数を「16スキル + 1オーケストレーター」に修正
+- **M4**: `README.md` スキル一覧・独立スキル・v4新機能に `ultra-parallel` 追加
+- **M5**: `ultra-second-opinion` を Claude Code 固定から汎用AI対応に変更
+- **M8**: デュアルDB セクションに「高度な使用法」注記追加
+- **P1**: `.gitignore` 拡充（.env*, node_modules, *.log）
+- **P2**: `studyflow.md` 本番URLに時点注記追加
+- **P5**: `ultra-design-review` 保存先パスを `design-reviews/` に統一
+
 ### lint 修正
 
 - **README.md**: テーブルスタイル統一 + ベアURL修正
 - **AGENTS.md**: リスト前空行追加
+- **GUIDE.md / README.md**: ベアコードブロックに `text` 言語指定追加
 
 ## v4.1.1 (2026-03-24)
 

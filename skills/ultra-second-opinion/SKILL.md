@@ -1,22 +1,22 @@
 ---
 name: ultra-second-opinion
-description: "別AIに二次意見を求める。Claude Codeへの具体的なプロンプトを生成し、ターミナルにコピペするだけで使える。「二次意見」「セカンドオピニオン」「別の目で見て」で起動。"
+description: "別AIに二次意見を求める。Claude Code / ChatGPT / Copilot等への具体的なプロンプトを生成し、コピペするだけで使える。「二次意見」「セカンドオピニオン」「別の目で見て」で起動。"
 ---
 
 # Ultra Second Opinion — 二次意見ブリッジ
 
-> gstack `/codex` の代替アプローチ。Antigravity（Gemini）から Claude Code に直接依頼する仕組み。
+> gstack `/codex` の代替アプローチ。Antigravity（Gemini）から別のAIに直接依頼する仕組み。
 
 ## コンセプト
 
 **なぜ二次意見が重要か：**
 
 1つのAIだけに頼ると、そのAI特有のバイアスや盲点がそのまま製品に入る。
-AntigravityはGeminiベース。Claude Codeに聞くことで**異なるAIの視点**を得られる。
+AntigravityはGeminiベース。異なるAI（Claude Code, ChatGPT, Copilot等）に聞くことで**異なる視点**を得られる。
 
 **この仕組み：**
 
-Antigravityが現在のコンテキスト（コード変更、計画、問題）を分析して、Claude Codeに渡す最適なプロンプトを生成。ユーザーはターミナルにコピペするだけ。
+Antigravityが現在のコンテキスト（コード変更、計画、問題）を分析して、対象AIに渡す最適なプロンプトを生成。ユーザーはコピペするだけ。
 
 ## 起動条件
 
@@ -27,23 +27,25 @@ Antigravityが現在のコンテキスト（コード変更、計画、問題）
 
 ---
 
-## Step 1: 前提確認
+## Step 1: 対象AI選択
 
 ユーザーに確認:
 
 ```text
-Claude Code は使える状態ですか？
-  A) はい、インストール済み
-  B) いいえ、まだです
+どのAIに二次意見を求めますか？
+  A) Claude Code（ターミナル）
+  B) ChatGPT（ブラウザ）
+  C) GitHub Copilot（エディタ）
+  D) その他（指定してください）
+```
 
-Bの場合 → インストール手順を案内:
-  npm install -g @anthropic-ai/claude-code
-  claude   ← 初回認証
+### AI別の前提確認
 
-※ 上記はClaude Code の公式パッケージ名・コマンド形式です。
-  変更されている可能性があるため、公式ドキュメント（https://docs.anthropic.com/）を
-  確認してから実行してください。
-```text
+| AI | 確認事項 | インストール |
+|----|----------|-------------|
+| Claude Code | `claude` コマンドが使えるか | `npm install -g @anthropic-ai/claude-code` |
+| ChatGPT | ブラウザでアクセス可能か | https://chatgpt.com |
+| Copilot | エディタ拡張が有効か | VS Code / JetBrains 拡張 |
 
 ---
 
@@ -75,7 +77,7 @@ run_command: git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^ref
 run_command: git diff <default> --stat
 run_command: git diff <default> --name-only
 run_command: git log <default>..HEAD --oneline
-```text
+```
 
 変更内容を分析して、レビューで注目すべきポイントを特定。
 
@@ -89,7 +91,7 @@ run_command: git log <default>..HEAD --oneline
 # プロジェクト構成を把握
 find_by_name: Extensions=["ts", "tsx", "js", "jsx"], SearchDirectory="src/"
 view_file: package.json（先頭20行）
-```text
+```
 
 ---
 
@@ -101,7 +103,7 @@ view_file: package.json（先頭20行）
 
 ```text
 ╔══════════════════════════════════════════════════════════╗
-║  📋 Claude Code にコピペしてください                      ║
+║  📋 [対象AI名] にコピペしてください                        ║
 ╠══════════════════════════════════════════════════════════╣
 
   ターミナルで以下を実行:
@@ -111,14 +113,14 @@ view_file: package.json（先頭20行）
   claude "[生成されたプロンプト]"
 
 ╚══════════════════════════════════════════════════════════╝
-```bash
+```
 
 プロンプトの生成ルール:
 
 1. **日本語で生成**（ユーザーが日本語話者のため）
 2. **具体的に指示**（「コードを見て」ではなく「git diff mainの変更を見て、セキュリティ問題・バグ・パフォーマンス問題を深刻度P1-P3で指摘して」）
 3. **厳しさを指定**（「褒めなくていいので問題だけ教えて」）
-4. **変更内容を要約**（Claude Codeが何を見ればいいかわかるように）
+4. **変更内容を要約**（対象AIが何を見ればいいかわかるように）
 
 ### 各モードのプロンプトテンプレート
 
@@ -137,7 +139,7 @@ git diff <default> のコード変更をレビューしてください。
 
 見つかった問題は深刻度(P1: 致命的 / P2: 重要 / P3: 改善推奨)をつけてください。
 褒めなくていいので、問題だけ教えてください。容赦なくお願いします。
-```text
+```
 
 #### Challenge
 
@@ -156,7 +158,7 @@ git diff <default> のコード変更をレビューしてください。
 - リソース枯渇（DoS）
 
 褒めなくていいです。壊せる場所を全部教えてください。
-```text
+```
 
 #### Plan Review
 
@@ -174,7 +176,7 @@ git diff <default> のコード変更をレビューしてください。
 - 依存関係の順序問題
 
 褒めなくていいので、問題と改善点だけ教えてください。
-```text
+```
 
 #### Architecture
 
@@ -194,7 +196,7 @@ git diff <default> のコード変更をレビューしてください。
 - より良い構成の提案（あれば）
 
 率直な意見をお願いします。
-```text
+```
 
 #### Consult（自由質問）
 
@@ -204,9 +206,9 @@ git diff <default> のコード変更をレビューしてください。
 
 ## Step 5: フィードバック活用
 
-Claude Code の出力をユーザーが共有してくれた場合：
+対象AIの出力をユーザーが共有してくれた場合：
 
-1. **Claude の指摘を読み取る**
+1. **対象AIの指摘を読み取る**
 2. **Antigravity（私）の見解と照合**
 3. **合意点と相違点を整理**
 
@@ -215,7 +217,7 @@ Claude Code の出力をユーザーが共有してくれた場合：
 ║  CROSS-AI 分析                                          ║
 ╠══════════════════════════════════════════════════════════╣
 ║  両方が指摘:     [N] 件（信頼度: 高）                    ║
-║  Claude のみ:    [N] 件（検討推奨）                      ║
+║  対象AIのみ:   [N] 件（検討推奨）                        ║
 ║  Antigravityのみ: [N] 件（検討推奨）                     ║
 ║  意見相違:       [N] 件（詳細下記）                      ║
 ╚══════════════════════════════════════════════════════════╝
@@ -227,7 +229,7 @@ Claude Code の出力をユーザーが共有してくれた場合：
 
 ## レッドフラグ
 
-- ❌ Claude Code の出力を要約して省略する（全文を尊重）
+- ❌ 対象AIの出力を要約して省略する（全文を尊重）
 - ❌ 「私の方が正しい」と一方的に判断する（根拠を提示して判断はユーザーに）
-- ❌ コンテキストなしのプロンプトを生成する（Claude Codeが何を見るべきかわからない）
+- ❌ コンテキストなしのプロンプトを生成する（対象AIが何を見るべきかわからない）
 - ❌ ユーザーの技術レベルに合わないプロンプトを生成する（コピペで使えることが大前提）

@@ -13,6 +13,8 @@ description: "実装完了後に起動。検証なき完了宣言禁止 + Fix-Fi
 - ultra-implement 完了後
 - ultra-debug 完了後（修正のレビュー）
 
+> **学習パターン参照**: 同ディレクトリの `learned-patterns.md` が存在する場合、スキル実行時に参照し、過去の知見を活用する。
+
 ---
 
 ## Step 1: 鉄則 — 検証なき完了宣言禁止
@@ -38,7 +40,7 @@ run_command: git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^ref
 
 run_command: git diff <default>...HEAD --stat
 run_command: git log <default>..HEAD --oneline
-```text
+```
 
 `<default>` は上記で検出したデフォルトブランチ名。変更の全体像を把握し、タッチされたファイルを全て読む。
 
@@ -60,7 +62,7 @@ run_command: git log <default>..HEAD --oneline
 Pass 1 判定:
   ✅ PASS → Pass 2 に進む
   ❌ FAIL → 不一致箇所をリスト化し、修正してから再レビュー
-```text
+```
 
 ### Pass 2: コード品質チェック（Code Quality）
 
@@ -103,7 +105,7 @@ Pass 1 判定:
 4. EVALUATE: このコードベースにとって技術的に正しいか？
 5. RESPOND: 技術的確認 or 理由付きプッシュバック
 6. IMPLEMENT: 1つずつ実装、各々テスト
-```javascript
+```
 
 ### 禁止レスポンス
 
@@ -118,7 +120,7 @@ IF reviewer suggests "implementing properly":
   → grep codebase for actual usage
   → IF unused: "This endpoint isn't called. Remove it (YAGNI)?"
   → IF used: Then implement properly
-```text
+```
 
 ### プッシュバック基準
 
@@ -139,7 +141,7 @@ IF reviewer suggests "implementing properly":
    - 複雑修正（リファクタリング・ロジック）
 3. 各修正を個別にテスト
 4. リグレッションなしを確認
-```text
+```
 
 ## Step 5: 品質ゲート
 

@@ -13,6 +13,8 @@ description: "パフォーマンス計測・回帰検出。Playwright MCPでCore
 - 「バンドルサイズ」「Web Vitals」「ロード時間」
 - PR作成前のパフォーマンスチェック
 
+> **学習パターン参照**: 同ディレクトリの `learned-patterns.md` が存在する場合、スキル実行時に参照し、過去の知見を活用する。
+
 ## 引数
 
 - `/benchmark <url>` — フルパフォーマンス監査（ベースライン比較あり）
@@ -24,7 +26,7 @@ description: "パフォーマンス計測・回帰検出。Playwright MCPでCore
 
 ```bash
 run_command: mkdir -p docs/ultrapower/benchmark-reports/baselines
-```text
+```
 
 ## Step 2: ページパフォーマンスデータ収集
 
@@ -33,7 +35,7 @@ run_command: mkdir -p docs/ultrapower/benchmark-reports/baselines
 ```text
 1. mcp_playwright_browser_navigate → <対象URL>
 2. mcp_playwright_browser_wait_for → time: 5（ページロード完了待ち）
-```text
+```
 
 ### 2.1 Core Web Vitals 取得
 
@@ -56,7 +58,7 @@ mcp_playwright_browser_evaluate:
         tcp_ms: Math.round(nav.connectEnd - nav.connectStart)
       });
     }
-```text
+```
 
 ### 2.1b LCP（Largest Contentful Paint）取得
 
@@ -84,7 +86,7 @@ mcp_playwright_browser_evaluate:
         }, 3000);
       });
     }
-```text
+```
 
 **注意**: LCPはページ操作なしで最後に報告された値が最終値。ページロード後すぐに取得すること。重いSPAではLCPイベントの発火が遅れる場合があるため、タイムアウトを3秒に設定。それでも取得できない場合はさらに延長を検討。
 
@@ -106,7 +108,7 @@ mcp_playwright_browser_evaluate:
         .slice(0, 15);
       return JSON.stringify(top15);
     }
-```text
+```
 
 ### 2.3 バンドルサイズ分析
 
@@ -128,7 +130,7 @@ mcp_playwright_browser_evaluate:
         css_files: css
       });
     }
-```text
+```
 
 ## Step 3: ベースライン保存（--baseline モード）
 
@@ -154,7 +156,7 @@ JSONファイルとして保存:
     }
   }
 }
-```text
+```
 
 保存先: `docs/ultrapower/benchmark-reports/baselines/baseline.json`
 
@@ -176,7 +178,7 @@ DOM Interactive     600ms           650ms       +50ms       OK
 DOM Complete        1200ms          1350ms      +150ms      WARNING
 Total Transfer      1.2MB           1.8MB       +0.6MB      REGRESSION
 JS Bundle           450KB           720KB       +270KB      REGRESSION
-```text
+```
 
 ### 回帰検出しきい値
 
@@ -203,7 +205,7 @@ Total Transfer   < 2MB        1.8MB       WARNING (90%)
 HTTP Requests    < 50         58          FAIL
 
 グレード: B (4/6 合格)
-```text
+```
 
 ## Step 6: トップ10遅延リソース
 
@@ -218,7 +220,7 @@ TOP 10 遅延リソース
 推奨:
 - vendor.chunk.js: コード分割を検討 — 初期ロードに320KBは大きい
 - analytics.js: async/defer で読み込み — 250msレンダリングをブロック
-```text
+```
 
 ## Step 7: トレンド分析（--trend モード）
 
@@ -236,13 +238,13 @@ TOP 10 遅延リソース
 
 トレンド: パフォーマンス悪化中。LCPが8日で倍増。
          JSバンドルが週50KB成長。調査推奨。
-```bash
+```
 
 ## Step 8: レポート保存
 
 ```bash
 run_command: mkdir -p docs/ultrapower/benchmark-reports
-```text
+```
 
 `docs/ultrapower/benchmark-reports/{date}-benchmark.md` と `.json` に保存。
 
@@ -257,7 +259,7 @@ mcp_memory_create_entities:
       - "Grade: [A/B/C/D/F]"
       - "REGRESSION: [検出された回帰の概要]"
       - "推奨: [主要な改善提案]"
-```text
+```
 
 ## 完了レポート
 

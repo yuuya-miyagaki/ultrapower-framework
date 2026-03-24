@@ -7,11 +7,13 @@ description: "計画承認後に起動。TDDサイクルで計画を実行し、
 
 承認された実装計画をTDDサイクルで実行する。
 
+> **学習パターン参照**: 同ディレクトリの `learned-patterns.md` が存在する場合、スキル実行時に参照し、過去の知見を活用する。
+
 ## 前提ルール（AGENTS.md「5つの鉄則」参照）
 
 ```text
 失敗するテストなしに本番コードを書かない
-```text
+```
 
 コードを先に書いた？ **削除。最初からやり直す。**
 - 「参考にする」のもダメ
@@ -25,7 +27,7 @@ description: "計画承認後に起動。TDDサイクルで計画を実行し、
 ```yaml
 mcp_context7_resolve-library-id: [使用ライブラリ名]
 mcp_context7_query-docs: [実装に必要な具体的なAPI/パターン]
-```text
+```
 
 **例**: Next.js App Router, Supabase Auth, Firebase SDK 等
 
@@ -40,7 +42,7 @@ npm install  # / pip install -r requirements.txt / cargo build
 
 # テストベースライン確認
 npm test  # / pytest / cargo test / go test ./...
-```text
+```
 
 ### DB バックエンド確認
 
@@ -63,7 +65,7 @@ AGENTS.md の自動検出ルールに従ってDB種別を特定（詳細は AGEN
   ✅ 実装計画がある → YES
   ✅ タスクが概ね独立 → YES
   ✅ タスクが5つ以上 → 推奨
-```text
+```
 
 #### タスク分割実行フロー
 
@@ -78,7 +80,7 @@ AGENTS.md の自動検出ルールに従ってDB種別を特定（詳細は AGEN
   └──────────────────────┘
 
 全タスク完了 → 統合テスト → ultra-review へ
-```text
+```
 
 #### 1. タスクの逐次TDD実行
 
@@ -129,7 +131,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // ❌ ブラウザでエラーになる
 module.exports = { MyClass };
-```text
+```
 
 **適用場面**: フレームワーク不使用のHTML+JSプロジェクト。React/Next.js/Vite等のバンドラー使用時は不要。
 
@@ -142,7 +144,7 @@ test('正しい認証情報でログインできる', async () => {
   expect(result.success).toBe(true);
   expect(result.token).toBeDefined();
 });
-```yaml
+```
 
 **要件:**
 - 1テスト = 1つの振る舞い
@@ -153,7 +155,7 @@ test('正しい認証情報でログインできる', async () => {
 
 ```bash
 npm test path/to/test.test.ts
-```yaml
+```
 
 確認事項:
 - テストが**失敗**する（エラーではなく失敗）
@@ -173,7 +175,7 @@ npm test path/to/test.test.ts
 npm test path/to/test.test.ts
 # + 全テストスイート
 npm test
-```yaml
+```
 
 確認事項:
 - 該当テスト通過
@@ -194,7 +196,7 @@ npm test
 ```bash
 git add -A
 git commit -m "feat: <タスク名> — RED→GREEN→REFACTOR完了"
-```text
+```
 
 ## Step 5: UI検証（Webアプリの場合）
 
@@ -206,7 +208,7 @@ Playwright MCP でUIの動作を確認：
 3. mcp_playwright_browser_click → ボタンをクリック
 4. mcp_playwright_browser_snapshot → 変化を確認
 5. mcp_playwright_browser_take_screenshot → 証拠スクリーンショット
-```text
+```
 
 ### フォームテスト
 
@@ -217,7 +219,7 @@ Playwright MCP でUIの動作を確認：
 4. mcp_playwright_browser_click → 送信ボタン
 5. mcp_playwright_browser_snapshot → 結果確認
 6. mcp_playwright_browser_console_messages → エラーチェック
-```text
+```
 
 ## Step 6: 進捗確認と次タスク
 
@@ -238,7 +240,7 @@ mcp_memory_create_entities:
       - "パターン: [使用したデザインパターン]"
       - "ハマりポイント: [解決に時間がかかった点]"
       - "DB: [Supabase/Firebase] — [具体的な設定/注意点]"
-```text
+```
 
 ## Step 8: 全タスク完了 → ultra-review へ
 
@@ -250,7 +252,7 @@ npm test  # / pytest / cargo test / go test ./...
 
 # テストカバレッジ確認（可能な場合）
 npm run test:coverage 2>/dev/null || true
-```text
+```
 
 全テスト通過 → **ultra-review** スキルに遷移。
 
@@ -269,7 +271,7 @@ npm run test:coverage 2>/dev/null || true
 ║  Memory保存:    [N] 件                   ║
 ║  次のフェーズ:  ultra-review             ║
 ╚══════════════════════════════════════════╝
-```text
+```
 
 ## デュアルDB 実装パターン
 

@@ -36,7 +36,7 @@ run_command: git log --oneline -10
 
 # 既存ドキュメント
 view_file → README.md
-```text
+```
 
 ### Step 2: Search Before Building（三層知識探索）
 
@@ -49,7 +49,7 @@ view_file → README.md
   ```yaml
   mcp_context7_resolve-library-id: [関連ライブラリ]
   mcp_context7_query-docs: [実現したい機能のベストプラクティス]
-  ```yaml
+```
 
 **Layer 2 — 新興（人気上昇中）:**
 - 新しいトレンドやアプローチの検索
@@ -64,7 +64,7 @@ view_file → README.md
 🔬 EUREKA: [従来の常識] は [この文脈では] 誤りの可能性がある。
    根拠: [第一原理からの説明]
    推奨: [新しいアプローチ]
-```text
+```
 
 ### Step 3: 明確化質問（4段構造）
 
@@ -75,7 +75,7 @@ view_file → README.md
 2. 平易化: 技術用語を避け、要点を1文で
 3. 推奨:  「[Y] を推奨します。理由は [Z] です」
 4. 選択肢: 「A か B、どちらが良いですか？」（具体的な2択以上）
-```text
+```
 
 - 1つの質問 → 回答 → 次の質問（1つずつ順番に）
 - スコープが大きすぎる場合は分解を提案
@@ -96,7 +96,7 @@ view_file → README.md
 - メリット: ...
 - デメリット: ...
 - 完全性スコア: 6/10
-```text
+```
 
 **完全性原則（Boil the Lake）:**
 - AIで実装コストが低い場合、常に完全版（スコア高い方）を推奨
@@ -118,7 +118,7 @@ run_command: |
   *.log
   coverage/
   EOF
-```bash
+```
 
 **重要**: `.gitignore` は初回コミット前に必ず作成すること。後から追加しても
 既にステージされたファイルは追跡から除外されない（`git rm --cached` が必要）。
@@ -134,7 +134,7 @@ run_command: |
 
 ```bash
 run_command: mkdir -p docs/ultrapower/specs
-```text
+```
 
 `docs/ultrapower/specs/YYYY-MM-DD-<topic>-design.md` に保存：
 

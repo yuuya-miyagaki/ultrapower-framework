@@ -19,18 +19,18 @@ cp -r ultrapower/ your-project/ultrapower/
 
 ## 開発ワークフロー
 
-```
+```text
 onboard → brainstorm → plan → implement → review → qa → ship → retro
                                   ↑                       |
                                   └──── debug ←───────────┘
 
 独立スキル（任意タイミング）:
-  benchmark / design-system / design-review / docs / second-opinion
+  benchmark / design-system / design-review / docs / second-opinion / parallel
 ```
 
 ### 典型的な新規PJ フロー
 
-```
+```text
 1. 「アプリを作りたい」        → ultra-brainstorm (アイデア整理)
 2. 「設計を決めよう」          → ultra-design-system (DESIGN.md生成)
 3. 「実装計画を立てて」        → ultra-plan (TDD計画 + 3段階レビュー)
@@ -41,7 +41,7 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 8. 「振り返りしよう」          → ultra-retro (Git分析 + Memory永続化)
 ```
 
-## スキル一覧（15スキル + 1オーケストレーター）
+## スキル一覧（16スキル + 1オーケストレーター）
 
 | スキル | 起動トリガー | 機能 |
 | ------ | ------------ | ---- |
@@ -58,7 +58,8 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 | **ultra-debug** | バグ発見時 | 4フェーズ体系的デバッグ + 並列エージェント |
 | **ultra-retro** | 「振り返りしよう」 | Git分析 + セッション検出 + ストリーク + Memory永続化 |
 | **ultra-docs** | 「ドキュメント更新して」 | diff分析 → 自動ドキュメント更新 → 一貫性チェック |
-| **ultra-second-opinion** | 「別の意見が欲しい」 | Claude Code二次意見ブリッジ + プロンプト自動生成 |
+| **ultra-second-opinion** | 「別の意見が欲しい」 | 別AI二次意見ブリッジ + プロンプト自動生成 |
+| **ultra-parallel** | 「並列で」「同時に」 | 独立タスク並列実行・browser_subagent委譲・BGパイプライン |
 | **ultrapower-workflow** | 自動 | フェーズルーティング + 安全ガードレール |
 
 ## MCP ツール統合
@@ -103,18 +104,13 @@ mcp_firebase-mcp-server_firebase_init:
     auth: { providers: { emailPassword: true } }
 ```
 
-## 実践結果: StudyFlow PJ
+## 実践結果
 
-Ultrapower v4.1 で構築した個人ナレッジハブ「StudyFlow」の実績:
+> 詳細は [docs/case-studies/](docs/case-studies/) を参照。
 
-| 指標 | 値 |
-| ---- | ---- |
-| 実装時間 | 74分 (2セッション) |
-| テスト | 83件 100% PASS |
-| バンドル (gzip) | 60 KB |
-| TTFB | 263 ms |
-| セキュリティ | A評価 (本番脆弱性0) |
-| 本番URL | [StudyFlow](https://studyflow-two-fawn.vercel.app) |
+| プロジェクト | 実装時間 | テスト | 概要 |
+| ------------ | -------- | ------ | ---- |
+| StudyFlow | 74分 | 83件 100% PASS | 個人ナレッジハブ（Ultrapower v4.1で構築） |
 
 ## v4 新機能
 
@@ -122,7 +118,8 @@ Ultrapower v4.1 で構築した個人ナレッジハブ「StudyFlow」の実績:
 - 🎨 **ultra-design-system**: 競合リサーチ → DESIGN.md生成
 - 🎯 **ultra-design-review**: 7軸デザイン監査 + 自動修正
 - 📝 **ultra-docs**: diff分析 → 自動ドキュメント更新
-- 🤝 **ultra-second-opinion**: Claude Code 二次意見ブリッジ
+- 🤝 **ultra-second-opinion**: 別AI二次意見ブリッジ
+- ⚡ **ultra-parallel**: 独立タスク並列実行 + サブエージェント委譲
 - 🔄 **ultra-retro強化**: セッション検出 + ストリーク + global横断
 - 🤖 **ultra-implement強化**: 2段階レビュー + DB自動検出
 - ✅ **ultra-review強化**: 検証なき完了宣言禁止
@@ -137,7 +134,7 @@ Ultrapower v4.1 で構築した個人ナレッジハブ「StudyFlow」の実績:
   - Draw.io MCP（アーキテクチャ図生成用）
   - GitHub MCP（PR・ブランチ管理用）
   - Firebase MCP（Firebase プロジェクト管理用、オプション）
-- Claude Code（ultra-second-opinion 用、オプション）
+- 外部AI（Claude Code, ChatGPT 等 — ultra-second-opinion 用、オプション）
 
 ## ライセンス
 

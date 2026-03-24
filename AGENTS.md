@@ -21,11 +21,11 @@
 | ultra-design-system | デザインシステム構築・提案 |
 | ultra-design-review | デザイン監査・自動修正 |
 | ultra-docs | ドキュメント同期・整合性チェック |
-| ultra-second-opinion | Claude Code二次意見ブリッジ |
-| ultra-parallel | 並列実行・サブエージェント・バックグラウンド |
+| ultra-second-opinion | 別AIへの二次意見ブリッジ |
+| ultra-parallel | 独立タスクの並列実行・browser_subagent委譲・バックグラウンドパイプライン |
 | ultrapower-workflow | 常時（自動ルーティング） |
 
-**1%でも関連するスキルがあればトリガーすること。**
+**明確に関連するスキルがあればトリガーすること。判断に迷う場合はユーザーに確認。**
 
 ---
 
@@ -33,6 +33,14 @@
 
 ### 1. テストファースト（TDD厳守）
 失敗するテストを書いてから本番コードを書く。例外なし。
+
+**TDD適用除外** — 以下はテストファーストを適用しない代わりに、指定の検証で品質を担保:
+
+| 変更種別 | 代替検証 |
+|----------|----------|
+| CSS / スタイリング | ultra-design-review で視覚検証（スクリーンショット比較） |
+| 設定ファイル (.env, firebase.json 等) | 動作確認（Dev Server起動 or コマンド実行） |
+| ドキュメント更新 | ultra-docs の一貫性チェック |
 
 ### 2. 検証なし完了宣言禁止
 コマンド出力なしに「動作する」「テスト通過」と言ってはならない。
@@ -83,9 +91,25 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 ║  REASON: [1-2行の説明]                   ║
 ║  EVIDENCE: [検証コマンド出力 or リンク]   ║
 ╚══════════════════════════════════════════╝
-```text
+```
 
 **ルール**: DONE 以外のステータスでは必ず REASON を記載すること。
+
+---
+
+## コードブロック言語指定ルール
+
+SKILL.md 内のコードブロックには必ず言語を指定する:
+
+| 用途 | 言語指定 |
+|------|---------|
+| MCP ツール呼び出し | `yaml` |
+| シェルコマンド | `bash` |
+| JavaScript/TypeScript | `javascript` / `typescript` |
+| 出力例・テーブル | `text` |
+| Mermaid 図 | `mermaid` |
+| Python | `python` |
+| Markdown テンプレート | `markdown` |
 
 ---
 
@@ -115,7 +139,7 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
   推奨:     [より安全な代替案]
 
 実行しますか？ (y/N)
-```text
+```
 
 **ユーザーの明示的承認なしに破壊的コマンドを実行しない。**
 
@@ -135,7 +159,7 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 
 ```yaml
 例: 「⚡ テスト実行中に deprecation warning を3件検出しました（React 19 対応が必要）。今修正しますか？」
-```text
+```
 
 ---
 
@@ -160,7 +184,7 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 DB BACKEND: None
 スキップ: DB関連のステップ（マイグレーション、セキュリティルール等）
 対象: 静的サイト、CLIツール、ライブラリ、フロントエンドのみPJ等
-```text
+```
 
 **アクション**: ultra-onboard / ultra-implement / ultra-ship でDB関連ステップをスキップ。
 
@@ -172,7 +196,7 @@ DB操作:      Supabase Dashboard or supabase CLI
 ストレージ:  Supabase Storage
 マイグレーション: supabase/migrations/
 デプロイ:    Vercel / Cloudflare (フロント) + Supabase (バックエンド)
-```text
+```
 
 #### Supabase マイグレーション自動化（推奨）
 
@@ -191,7 +215,7 @@ npx supabase db push                 # リモートに適用
 # supabase/migrations/ にSQLファイルを配置
 # Supabase Dashboard SQL Editor で手動実行
 # ⚠️ 実行後、必ず結果をスクリーンショットで記録
-```text
+```
 
 #### Supabase キーバリデーション
 
@@ -210,7 +234,7 @@ DB操作:      mcp_firebase-mcp-server_* ツール群
 ストレージ:  Firebase Storage
 マイグレーション: Firestore Security Rules
 デプロイ:    mcp_firebase-mcp-server_firebase_init → hosting
-```text
+```
 
 #### Firebase セットアップ自動化
 
@@ -230,7 +254,7 @@ mcp_firebase-mcp-server_firebase_init:
 # 3. セキュリティルール確認
 mcp_firebase-mcp-server_firebase_get_security_rules:
   type: "firestore"
-```text
+```
 
 ### Firebase MCP ツール一覧
 
@@ -246,6 +270,8 @@ mcp_firebase-mcp-server_firebase_get_security_rules:
 
 ### デュアルDB 抽象化パターン（推奨）
 
+> **高度な使用法** — 通常は Supabase か Firebase の単体使用で十分。両方のバックエンドを切替可能にする場合のみ参照。
+
 Supabase と Firebase を同一プロジェクトで切替可能にする Provider Pattern:
 
 ```javascript
@@ -260,7 +286,7 @@ export async function getDB() {
   const { SupabaseAdapter } = await import('./adapters/supabase-adapter.js');
   return new SupabaseAdapter();
 }
-```text
+```
 
 #### 統一 API 契約
 
@@ -276,7 +302,7 @@ db.from('table').select('*').eq('field', value).order('created_at', { ascending:
 db.from('table').insert(record)
 db.from('table').update(record).eq('id', docId)
 db.from('table').delete().eq('id', docId)
-```text
+```
 
 #### 切替方法
 
@@ -284,7 +310,7 @@ db.from('table').delete().eq('id', docId)
 # .env
 VITE_DB_PROVIDER=supabase  # デフォルト
 VITE_DB_PROVIDER=firebase  # Firebase に切替
-```text
+```
 
 **実績**: StudyFlow PJで検証済み — 83テスト全PASS、ページコード変更なしで切替可能
 
@@ -328,7 +354,7 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 ```text
 1. mcp_context7_resolve-library-id → ライブラリID取得
 2. mcp_context7_query-docs → 具体的な質問でドキュメント取得
-```text
+```
 
 **使用タイミング**: ultra-brainstorm / ultra-plan / ultra-implement / ultra-debug / ultra-onboard
 
@@ -341,7 +367,7 @@ mcp_memory_create_entities   → 新規知識の保存
 mcp_memory_search_nodes      → 過去の知識検索
 mcp_memory_add_observations  → 既存知識の更新
 mcp_memory_create_relations  → 知識間の関係記録
-```text
+```
 
 **使用タイミング**: ultra-onboard / ultra-retro / ultra-debug
 
@@ -350,7 +376,7 @@ mcp_memory_create_relations  → 知識間の関係記録
 ```text
 mcp_drawio_open_drawio_mermaid → Mermaid記法で図生成
 mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
-```text
+```
 
 **使用タイミング**: ultra-plan / ultra-onboard
 
@@ -375,7 +401,7 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 5. mcp_playwright_browser_take_screenshot → tablet.png
 6. mcp_playwright_browser_resize → {width: 375, height: 812}    # Mobile
 7. mcp_playwright_browser_take_screenshot → mobile.png
-```text
+```
 
 ---
 
@@ -413,7 +439,7 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 
 ```text
 ultrapower/skills/{skill-name}/SKILL.md
-```text
+```
 
 スキル参照は「ultrapower:{skill-name}」形式。
 
@@ -432,7 +458,7 @@ docs/ultrapower/
 ├── retro-reports/        ← ultra-retro
 ├── benchmark-reports/    ← ultra-benchmark
 └── design-reviews/       ← ultra-design-review（デザイン監査レポート）
-```bash
+```
 
 各スキル実行時に `mkdir -p` で自動作成。
 
@@ -440,13 +466,33 @@ docs/ultrapower/
 
 ## 完了状態レポート形式
 
+> 各スキル固有の完了レポートは各 SKILL.md 内で定義。共通ステータスコードは「完了ステータスプロトコル」セクション（上記）を参照。
+
 ```text
 ╔══════════════════════════════════════════╗
 ║  ULTRAPOWER — [フェーズ名] 完了          ║
 ╠══════════════════════════════════════════╣
-║  ステータス: [PASS/FAIL/PARTIAL]         ║
+║  STATUS: [DONE / DONE_WITH_CONCERNS /   ║
+║          BLOCKED / NEEDS_CONTEXT]        ║
 ║  実施項目:   [N] 件                      ║
 ║  検出問題:   [N] 件（解決: [N]）         ║
 ║  次のフェーズ: [推奨フェーズ名]           ║
 ╚══════════════════════════════════════════╝
 ```
+
+---
+
+## 検証責務マトリクス
+
+各検証項目のオーナーシップを明確化。**Owner** が正式な検証を行い、他スキルでの実行は「前提確認」。
+
+| 検証項目 | Owner（正式検証） | 前提確認のみ |
+|----------|------------------|-------------|
+| 自動テスト実行 | **ultra-qa** | ultra-implement（開発中）, ultra-ship（最終確認） |
+| コードレビュー | **ultra-review** | — |
+| セキュリティ監査（OWASP/STRIDE） | **ultra-ship** | ultra-onboard（概観のみ） |
+| 依存脆弱性（npm audit等） | **ultra-ship** | ultra-onboard（概観のみ） |
+| レスポンシブUI検証 | **ultra-qa** | ultra-design-review（デザイン観点） |
+| パフォーマンス計測 | **ultra-benchmark** | ultra-qa（簡易ロード時間のみ） |
+| デザイン品質検証 | **ultra-design-review** | — |
+| DB検出 | **ultra-onboard** | ultra-implement, ultra-ship（結果を参照） |

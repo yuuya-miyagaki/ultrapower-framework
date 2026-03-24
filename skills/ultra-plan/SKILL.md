@@ -42,11 +42,11 @@ ultra-brainstorm で設計が承認された時に起動。
 
 | 粒度 | 基準 | 行動 |
 |------|------|------|
-| **適正** | 1タスク = 2〜5分で完了可能 | そのまま採用 |
-| **大きすぎ** | 10分以上かかる | サブタスクに分解 |
+| **適正** | 1テスト + 1実装ファイルで完結 | そのまま採用 |
+| **大きすぎ** | 複数テストファイルにまたがる | サブタスクに分解 |
 | **小さすぎ** | ワンライナーの変更 | 隣接タスクと統合 |
 
-> 「AI支援の2-5分」指標。人間の作業時間ではなく、AIがテスト+実装を完了できる目安時間。
+> 粒度基準は「テスト+実装の完結単位」。時間見積もりはプロジェクト規模に依存するため基準に含めない。
 
 ### タスクフォーマット
 
@@ -66,7 +66,7 @@ ultra-brainstorm で設計が承認された時に起動。
 
 ### 検証コマンド
 - `[テスト実行コマンド]`
-```text
+```
 
 ## Step 2: CEO戦略レビュー（4モードスコープ管理）
 
@@ -81,7 +81,7 @@ ultra-brainstorm で設計が承認された時に起動。
 ```text
   現在の状態           →  この計画     →  12ヶ月後の理想
   [describe]                [delta]          [target]
-```text
+```
 
 ### 2C. Implementation Alternatives（必須）
 
@@ -98,7 +98,7 @@ APPROACH A: [名前]
 
 APPROACH B: [名前]
   ...
-```text
+```
 
 - 1つは「最小実行可能版」（最少ファイル、最小差分）
 - 1つは「理想アーキテクチャ版」（長期的最適）
@@ -127,7 +127,7 @@ APPROACH B: [名前]
   HOUR 2-3 (核心):   どの曖昧さにぶつかるか？
   HOUR 4-5 (統合):   何に驚くか？
   HOUR 6+ (仕上げ):  何を事前に計画しておきたかったか？
-```text
+```
 
 ## Step 3: Engレビュー（認知パターン15原則適用）
 
@@ -162,17 +162,25 @@ mcp_drawio_open_drawio_mermaid:
       subgraph [コンポーネント名]
         [ノード定義]
       end
-```yaml
+```
 
 **Context7 で技術選定を検証:**
 
 ```yaml
 mcp_context7_resolve-library-id: [採用予定ライブラリ]
 mcp_context7_query-docs: ["ベストプラクティス" or "既知の問題"]
-```text
+```
 
 **Boring by Default**: 実績のある技術か？イノベーショントークンを賢く使っているか？
 **Reversibility**: Feature flag? canary? ロールバック手順は？
+
+#### 主要原則 適用チェックリスト
+
+| 原則 | 確認項目 | 判定 |
+|------|----------|------|
+| **Blast Radius** | 変更が影響する範囲は最小か？障害時の被害範囲は限定的か？ | ✓/✗ |
+| **Boring by Default** | 実績のある技術選定か？新技術に正当な理由があるか？ | ✓/✗ |
+| **Reversibility** | ロールバック手順は明確か？Feature flagで段階的に展開可能か？ | ✓/✗ |
 
 ### 3-2. エラー＆レスキューマップ
 
@@ -184,7 +192,7 @@ METHOD/CODEPATH      | WHAT CAN GO WRONG    | EXCEPTION CLASS
 EXCEPTION CLASS      | RESCUED? | RESCUE ACTION    | USER SEES
 ---------------------|----------|------------------|----------
                      |          |                  |
-```text
+```
 
 GAP = RESCUED=N → **CRITICAL GAP**
 
@@ -210,7 +218,7 @@ NEW UX FLOWS:    [各新インタラクション]
 NEW DATA FLOWS:  [各新データパス]
 NEW CODEPATHS:   [各新分岐/条件]
 NEW ERROR PATHS: [各新エラーパス]
-```yaml
+```
 
 各項目:
 - 何型テスト? (Unit/Integration/E2E)
@@ -251,14 +259,14 @@ UI/UXスコープがある場合のみ実行。
 ```text
 FEATURE          | LOADING | EMPTY | ERROR | SUCCESS | PARTIAL
 -----------------|---------|-------|-------|---------|--------
-```text
+```
 空状態は機能 — 温かさ、主要アクション、コンテキスト。
 
 ### Pass 3: ユーザージャーニー＆感情弧 (0-10)
 ```text
 STEP | USER DOES        | USER FEELS      | PLAN SPECIFIES?
 -----|------------------|-----------------|----------------
-```text
+```
 時間軸設計: 5秒（直感）、5分（行動）、5年（関係）
 
 ### Pass 4: AIスロップリスク (0-10)
@@ -280,7 +288,7 @@ DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 -----------------------------|---------------------------
 空状態のデザインは？          | エンジニアが「アイテムなし」を出荷
 モバイルナビパターンは？      | デスクトップナビがハンバーガーの裏に
-```text
+```
 
 ## Step 5: 計画承認
 
@@ -298,7 +306,7 @@ DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 ║  Design Review: Score: ___/10 → ___/10 (UI scope: Y/N)     ║
 ║  Lake Score:    X/Y recommendations chose complete option   ║
 ╚══════════════════════════════════════════════════════════════╝
-```text
+```
 
 ## AskUserQuestion ルール（4段構造）
 
