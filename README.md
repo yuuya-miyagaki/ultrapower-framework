@@ -72,6 +72,7 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 | **Draw.io** | onboard, plan | アーキテクチャ図・フロー図の自動生成 |
 | **Firebase** | ship, implement | Firebase プロジェクト管理・デプロイ |
 | **GitHub** | ship, docs | PR作成、ブランチ管理 |
+| **Hugging Face** | implement, brainstorm | オープンAIモデル推論（チャット、要約、翻訳、画像生成等） |
 | **Filesystem** | 全スキル | ファイル読み書き・検索 |
 
 ## DB バックエンド
@@ -134,6 +135,7 @@ mcp_firebase-mcp-server_firebase_init:
   - Draw.io MCP（アーキテクチャ図生成用）
   - GitHub MCP（PR・ブランチ管理用）
   - Firebase MCP（Firebase プロジェクト管理用、オプション）
+- Hugging Face Pro アカウント + `huggingface_hub`（AI モデル推論用、オプション）
 - 外部AI（Claude Code, ChatGPT 等 — ultra-second-opinion 用、オプション）
 
 ## ライセンス

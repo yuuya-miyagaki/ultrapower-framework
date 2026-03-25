@@ -1,11 +1,18 @@
 # Changelog — Ultrapower
 
 > バージョニング基準: [SemVer](https://semver.org/lang/ja/) 準拠
+>
 > - **Major** (X.0.0): 破壊的変更（スキルインターフェース変更、AGENTS.md大規模改定）
 > - **Minor** (x.Y.0): 機能追加（新スキル、新ステップ、新機能）
 > - **Patch** (x.y.Z): バグ修正、ドキュメント修正、lint修正
 
 ## v4.2.0 (2026-03-24)
+
+### Hugging Face Pro 統合
+
+- **AGENTS.md**: Hugging Face（Pro）セクション追加
+- アカウント情報・認証・CLI 設定ガイド
+- `InferenceClient` 利用パターン（チャット、要約、翻訳、感情分析、音声、画像生成）
 
 ### デュアルDB 抽象化パターン
 
@@ -24,7 +31,7 @@
 - **M4**: `README.md` スキル一覧・独立スキル・v4新機能に `ultra-parallel` 追加
 - **M5**: `ultra-second-opinion` を Claude Code 固定から汎用AI対応に変更
 - **M8**: デュアルDB セクションに「高度な使用法」注記追加
-- **P1**: `.gitignore` 拡充（.env*, node_modules, *.log）
+- **P1**: `.gitignore` 拡充（`.env*`, `node_modules`, `*.log`）
 - **P2**: `studyflow.md` 本番URLに時点注記追加
 - **P5**: `ultra-design-review` 保存先パスを `design-reviews/` に統一
 
@@ -72,8 +79,8 @@
 
 #### Phase B — 独立スキルテスト
 
-7. **ultra-brainstorm**: 新規PJで.gitignore初期生成（Step 4.5）
-8. **ultra-docs**: README.mdテンプレート自動生成機能
+1. **ultra-brainstorm**: 新規PJで.gitignore初期生成（Step 4.5）
+2. **ultra-docs**: README.mdテンプレート自動生成機能
 
 ### lint修正
 
@@ -82,7 +89,7 @@
 ### テスト結果サマリー
 
 | スキル | 結果 |
-|-------|------|
+| ------- | ------ |
 | ultra-brainstorm | ✅ DONE |
 | ultra-plan | ✅ DONE |
 | ultra-implement | ✅ DONE |

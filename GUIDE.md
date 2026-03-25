@@ -47,3 +47,4 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 - DB自動検出: Supabase/Firebase を `.env` や設定ファイルから自動判定
 - Memory MCP: `ultra-onboard` と `ultra-retro` で知識を永続化
 - Context7: `ultra-plan` と `ultra-implement` でライブラリドキュメントを自動参照
+- Hugging Face: `InferenceClient` でチャット・要約・翻訳・画像生成等のAIモデルを活用
