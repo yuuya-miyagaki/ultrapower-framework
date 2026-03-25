@@ -389,6 +389,39 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 | ファイル取得 | `mcp_github_get_file_contents` |
 | Issue操作 | `mcp_github_create_issue` / `mcp_github_list_issues` |
 
+### Hugging Face（Pro）
+
+> オープンAIモデルのAPI呼び出し、モデル/データセット/Spaces管理
+
+- **アカウント**: `yuuya-miyagaki`（Pro契約）
+- **認証**: `~/.cache/huggingface/token` に保存済み（自動読み込み）
+- **CLI**: `hf` コマンド（`~/.zshrc` にPATH設定済み）
+
+#### 利用パターン
+
+```python
+from huggingface_hub import InferenceClient
+
+# チャット形式（Llama, Mistral等）
+client = InferenceClient(provider="novita")
+result = client.chat.completions.create(
+    model="meta-llama/Llama-3.1-8B-Instruct",
+    messages=[{"role": "user", "content": "質問内容"}],
+)
+print(result.choices[0].message.content)
+```
+
+#### 活用例
+
+| 用途 | モデル例 |
+| ---- | -------- |
+| チャット・質問応答 | `meta-llama/Llama-3.1-8B-Instruct` |
+| テキスト要約 | `facebook/bart-large-cnn` |
+| 翻訳（日→英） | `Helsinki-NLP/opus-mt-ja-en` |
+| 感情分析 | `nlptown/bert-base-multilingual-uncased-sentiment` |
+| 音声→テキスト | `openai/whisper-large-v3` |
+| 画像生成 | `stabilityai/stable-diffusion-xl-base-1.0` |
+
 ---
 
 ## レスポンシブテスト手順
