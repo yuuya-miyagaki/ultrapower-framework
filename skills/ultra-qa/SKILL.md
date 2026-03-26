@@ -166,10 +166,10 @@ QA中にバグを発見した場合：
 ### レポート保存
 
 ```bash
-run_command: mkdir -p docs/ultrapower/qa-reports
+run_command: mkdir -p docs/qa-reports
 ```
 
-QAレポートを `docs/ultrapower/qa-reports/YYYY-MM-DD-qa-report.md` に保存。
+QAレポートを `docs/qa-reports/YYYY-MM-DD-qa-report.md` に保存。
 ultra-ship が PR本文に含めるため、ファイルとして永続化が必要。
 
 ```text

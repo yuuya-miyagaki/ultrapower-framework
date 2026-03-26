@@ -64,8 +64,8 @@ run_command: git shortlog origin/<default> --since="<window>" -sn --no-merges
 
 ### 1.3 品質データ
 
-- QAレポート（`docs/ultrapower/qa-reports/`）
-- レビュー結果（`docs/ultrapower/reviews/`）
+- QAレポート（`docs/qa-reports/`）
+- レビュー結果（`docs/reviews/`）
 
 ## Step 2: メトリクスサマリー
 
@@ -197,7 +197,7 @@ run_command: git log origin/<default> --author="<user_name>" --format="%ad" --da
 ## Step 9: 履歴ロード・比較
 
 ```yaml
-find_by_name: Pattern="*.json", SearchDirectory="docs/ultrapower/retro-reports/"
+find_by_name: Pattern="*.json", SearchDirectory="docs/retro-reports/"
 ```
 
 見つかったファイルを日付順にソートして最新5件を取得。
@@ -219,10 +219,10 @@ fix比率:            54%    →    30%         ↓24pp (改善)
 ### JSON スナップショット保存
 
 ```bash
-run_command: mkdir -p docs/ultrapower/retro-reports
+run_command: mkdir -p docs/retro-reports
 ```
 
-`docs/ultrapower/retro-reports/{date}-{seq}.json` に保存。
+`docs/retro-reports/{date}-{seq}.json` に保存。
 
 ### Memory MCP に永続化
 

@@ -25,7 +25,7 @@ description: "パフォーマンス計測・回帰検出。Playwright MCPでCore
 ## Step 1: セットアップ
 
 ```bash
-run_command: mkdir -p docs/ultrapower/benchmark-reports/baselines
+run_command: mkdir -p docs/benchmark-reports/baselines
 ```
 
 ## Step 2: ページパフォーマンスデータ収集
@@ -158,7 +158,7 @@ JSONファイルとして保存:
 }
 ```
 
-保存先: `docs/ultrapower/benchmark-reports/baselines/baseline.json`
+保存先: `docs/benchmark-reports/baselines/baseline.json`
 
 ## Step 4: ベースライン比較
 
@@ -243,10 +243,10 @@ TOP 10 遅延リソース
 ## Step 8: レポート保存
 
 ```bash
-run_command: mkdir -p docs/ultrapower/benchmark-reports
+run_command: mkdir -p docs/benchmark-reports
 ```
 
-`docs/ultrapower/benchmark-reports/{date}-benchmark.md` と `.json` に保存。
+`docs/benchmark-reports/{date}-benchmark.md` と `.json` に保存。
 
 ## Step 9: Memory MCP に永続化
 

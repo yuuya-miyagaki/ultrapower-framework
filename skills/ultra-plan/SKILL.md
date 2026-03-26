@@ -33,7 +33,7 @@ ultra-brainstorm で設計が承認された時に起動。
 
 承認済み設計から実装計画を生成:
 
-1. `docs/ultrapower/specs/` から最新の設計文書を読み込む（ultra-brainstorm が `YYYY-MM-DD-<topic>-design.md` として保存）
+1. `docs/specs/` から最新の設計文書を読み込む（ultra-brainstorm が `YYYY-MM-DD-<topic>-design.md` として保存）
 2. 各機能をタスクに分解（1タスク = 1テスト + 1実装）
 3. タスク間の依存関係を明示
 4. 各タスクに TDD サイクル指示を付与
@@ -292,7 +292,7 @@ DECISION NEEDED              | IF DEFERRED, WHAT HAPPENS
 
 ## Step 5: 計画承認
 
-全レビュー通過後、計画を `docs/ultrapower/plans/` に保存。
+全レビュー通過後、計画を `docs/plans/` に保存。
 
 ### 完了サマリー
 

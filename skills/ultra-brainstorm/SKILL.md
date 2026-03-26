@@ -133,10 +133,10 @@ run_command: |
 承認されたアプローチを文書化：
 
 ```bash
-run_command: mkdir -p docs/ultrapower/specs
+run_command: mkdir -p docs/specs
 ```
 
-`docs/ultrapower/specs/YYYY-MM-DD-<topic>-design.md` に保存：
+`docs/specs/YYYY-MM-DD-<topic>-design.md` に保存：
 
 - アーキテクチャ概要
 - コンポーネント設計

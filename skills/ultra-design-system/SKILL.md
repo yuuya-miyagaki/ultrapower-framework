@@ -168,7 +168,7 @@ write_to_file: /tmp/design-preview-[timestamp].html
 
 ```yaml
 1. mcp_playwright_browser_navigate → file:///tmp/design-preview-[timestamp].html
-2. mcp_playwright_browser_take_screenshot → docs/ultrapower/designs/preview.png
+2. mcp_playwright_browser_take_screenshot → docs/designs/preview.png
 ```
 
 ## Step 7: DESIGN.md 生成
