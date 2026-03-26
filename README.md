@@ -111,7 +111,7 @@ mcp_firebase-mcp-server_firebase_init:
 
 | プロジェクト | 実装時間 | テスト | 概要 |
 | ------------ | -------- | ------ | ---- |
-| StudyFlow | 74分 | 83件 100% PASS | 個人ナレッジハブ（Ultrapower v4.1で構築） |
+| 個人ナレッジハブ | 74分 | 83件 100% PASS | Ultrapower v4.1で構築した実プロジェクト |
 
 ## v4 新機能
 

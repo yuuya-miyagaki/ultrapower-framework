@@ -321,7 +321,7 @@ VITE_DB_PROVIDER=supabase  # デフォルト
 VITE_DB_PROVIDER=firebase  # Firebase に切替
 ```
 
-**実績**: StudyFlow PJで検証済み — 83テスト全PASS、ページコード変更なしで切替可能
+**実績**: 実プロジェクトで検証済み — 83テスト全PASS、ページコード変更なしで切替可能
 
 ---
 

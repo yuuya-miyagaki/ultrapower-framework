@@ -21,7 +21,7 @@
 - **AGENTS.md**: Provider Pattern テンプレート追加（db.js → Adapter）
 - **統一API契約**: auth(getUser/signUp/signIn/signOut) + CRUD(from/select/insert/update/delete)
 - **切替方法**: `VITE_DB_PROVIDER=supabase|firebase` 環境変数
-- **StudyFlow 実証**: 全ページ接続完了、83テスト PASS
+- **実プロジェクト実証**: 全ページ接続完了、83テスト PASS
 
 ### 最終監査 — 構造的整合性修正
 
@@ -45,7 +45,7 @@
 
 ## v4.1.1 (2026-03-24)
 
-### レトロ改善（StudyFlow PJ 振り返りから）
+### レトロ改善（実プロジェクト振り返りから）
 
 1. **テスト比率向上**: 39 → 71テスト (82%増)
    - pages/ テスト追加 (dashboard, bookmarks, notes, settings)

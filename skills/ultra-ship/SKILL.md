@@ -225,7 +225,7 @@ run_command: firebase emulators:start --only firestore
 run_command: firebase deploy --only firestore:rules
 ```
 
-> **教訓（Small World MVP — 2026-03-25）**: 本番環境で直接ルールを検証した結果、サブコレクション（`agents/{id}/shortTermMemories`）の権限漏れに3回のデプロイサイクルを費やした。エミュレータテストがあれば1回で解決できた。
+> **教訓（2026-03-25）**: 本番環境で直接ルールを検証した結果、サブコレクションの権限漏れに3回のデプロイサイクルを費やした。エミュレータテストがあれば1回で解決できた。
 
 #### Firestore サブコレクション設計ルール
 

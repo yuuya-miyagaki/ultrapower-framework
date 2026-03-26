@@ -6,8 +6,7 @@
 
 ### Firestore 再帰的サブコレクション（自動検出: 2026-03-25）
 
-**プロジェクト**: Small World MVP
-**状況**: Firestore で深いネスト構造（`worlds/{id}/agents/{id}/shortTermMemories/{id}`）を使用した際、セキュリティルールで個別パスを列挙していたためサブコレクションの権限が漏れた。
+**状況**: Firestore で深いネスト構造（3階層以上のサブコレクション）を使用した際、セキュリティルールで個別パスを列挙していたためサブコレクションの権限が漏れた。
 **解決策**: `match /{subPath=**}` で全サブコレクションを一括カバー。
 
 ```text
@@ -30,7 +29,6 @@ match /worlds/{worldId}/channels/{channelId} { ... }
 
 ### HF Inference API リトライパターン（自動検出: 2026-03-25）
 
-**プロジェクト**: Small World MVP
 **状況**: Hugging Face Inference API が断続的に 400/503 エラーを返す。
 **解決策**: 指数バックオフ付きリトライ（最大3回）を実装。
 
