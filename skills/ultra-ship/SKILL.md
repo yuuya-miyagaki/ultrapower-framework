@@ -209,6 +209,38 @@ run_command: vercel deploy --prod
 > **⚠️ 安全ガードレール（AGENTS.md 参照）**
 > `firebase deploy` は本番環境に影響するコマンドです。実行前にユーザーの明示的な確認を取得してください。
 
+#### セキュリティルールテスト（デプロイ前必須）
+
+```bash
+# 1. ルールのコンパイルチェック
+mcp_firebase-mcp-server_firebase_validate_security_rules:
+  type: "firestore"
+  source_file: "firestore.rules"
+
+# 2. エミュレータでのルールテスト（推奨）
+run_command: firebase emulators:start --only firestore
+# テストスイートを実行してルールの動作を検証
+
+# 3. テスト通過後にデプロイ
+run_command: firebase deploy --only firestore:rules
+```
+
+> **教訓（Small World MVP — 2026-03-25）**: 本番環境で直接ルールを検証した結果、サブコレクション（`agents/{id}/shortTermMemories`）の権限漏れに3回のデプロイサイクルを費やした。エミュレータテストがあれば1回で解決できた。
+
+#### Firestore サブコレクション設計ルール
+
+深いネスト構造（3階層以上）には再帰的ワイルドカードを使用:
+
+```text
+match /worlds/{worldId} {
+  match /{subPath=**} {
+    allow read, write: if isWorldOwner(worldId);
+  }
+}
+```
+
+個別パス列挙（`agents`, `channels`, `messages` 等）は漏れが発生しやすい。
+
 ```bash
 # Firebase MCP でデプロイ
 mcp_firebase-mcp-server_firebase_init: hosting + firestore

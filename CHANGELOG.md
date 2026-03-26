@@ -10,9 +10,11 @@
 
 ### Hugging Face Pro 統合
 
-- **AGENTS.md**: Hugging Face（Pro）セクション追加
-- アカウント情報・認証・CLI 設定ガイド
-- `InferenceClient` 利用パターン（チャット、要約、翻訳、感情分析、音声、画像生成）
+- **AGENTS.md**: Hugging Face（Pro）セクション拡張
+  - ユースケース駆動テーブル（8パターン: Inference API / Models Hub / Datasets Hub / Spaces / JS SDK）
+  - Models Hub / Datasets Hub / Spaces の探索ガイド追加
+  - 「探索先行」原則との連動
+- **README.md / GUIDE.md**: HF 説明を AGENTS.md と整合
 
 ### デュアルDB 抽象化パターン
 

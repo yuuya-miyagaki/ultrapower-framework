@@ -42,6 +42,15 @@
 | 設定ファイル (.env, firebase.json 等) | 動作確認（Dev Server起動 or コマンド実行） |
 | ドキュメント更新 | ultra-docs の一貫性チェック |
 
+**⚠️ TDD適用除外にならないもの:**
+
+- ❌ 「プロトタイプだから」— 本番デプロイするコードは必ずテストが必要
+- ❌ 「MVPだから」— MVP こそバグが致命的（初期ユーザーの信頼を失う）
+- ❌ 「急いでいるから」— テストなしのデプロイは結果的に遅くなる（デバッグコスト）
+- ❌ 「Firebase/Supabase のルールだけだから」— セキュリティルールこそテスト必須
+
+> **教訓（Small World MVP — 2026-03-25）**: 「素早いプロトタイプ」としてテストをスキップした結果、本番環境でFirestoreサブコレクションの権限エラーが発生。エミュレータテストがあれば防げたバグに、3回のデプロイサイクルを費やした。
+
 ### 2. 検証なし完了宣言禁止
 コマンド出力なしに「動作する」「テスト通過」と言ってはならない。
 「should」「probably」「seems to」は禁止ワード。
@@ -391,36 +400,39 @@ mcp_drawio_open_drawio_xml     → 詳細な図（XML形式）
 
 ### Hugging Face（Pro）
 
-> オープンAIモデルのAPI呼び出し、モデル/データセット/Spaces管理
+> 100万+学習済みモデル、25万+データセット、公開デモ（Spaces）を活用するAIエコシステム
 
 - **アカウント**: `yuuya-miyagaki`（Pro契約）
 - **認証**: `~/.cache/huggingface/token` に保存済み（自動読み込み）
 - **CLI**: `hf` コマンド（`~/.zshrc` にPATH設定済み）
+- **SDK**: Python `huggingface_hub` / JS `@huggingface/inference`
 
-#### 利用パターン
+#### やりたいこと → 使い方
 
-```python
-from huggingface_hub import InferenceClient
+| やりたいこと | HF機能 | コード例 |
+|-------------|--------|---------|
+| テキスト生成・チャット | Inference API | `InferenceClient().chat.completions.create(model="meta-llama/Llama-3.1-8B-Instruct", ...)` |
+| 画像生成 | Inference API | `InferenceClient().text_to_image("prompt", model="stabilityai/stable-diffusion-xl-base-1.0")` |
+| 翻訳・要約・感情分析 | Inference API | `InferenceClient().translation("テキスト", model="Helsinki-NLP/opus-mt-ja-en")` |
+| 音声→テキスト | Inference API | `InferenceClient().automatic_speech_recognition("audio.mp3", model="openai/whisper-large-v3")` |
+| 学習済みモデルをローカル実行 | Models Hub | `pipeline("task", model="model-name")` ※transformers |
+| 公開データセットを利用 | Datasets Hub | `load_dataset("dataset-name")` ※datasets |
+| 他者の公開デモをAPI利用 | Spaces | `Client("space-owner/space-name").predict(...)` ※gradio_client |
+| WebアプリにAI機能を組込み | JS SDK | `import { HfInference } from "@huggingface/inference"` |
 
-# チャット形式（Llama, Mistral等）
-client = InferenceClient(provider="novita")
-result = client.chat.completions.create(
-    model="meta-llama/Llama-3.1-8B-Instruct",
-    messages=[{"role": "user", "content": "質問内容"}],
-)
-print(result.choices[0].message.content)
-```
+#### Models Hub — 探索先行で活用
 
-#### 活用例
+モデル選定時は [huggingface.co/models](https://huggingface.co/models) で検索。タスク・言語・ライセンスでフィルタ可能。
+車輪の再発明を避けるため、**実装前に既存モデルの有無を確認**すること。
 
-| 用途 | モデル例 |
-| ---- | -------- |
-| チャット・質問応答 | `meta-llama/Llama-3.1-8B-Instruct` |
-| テキスト要約 | `facebook/bart-large-cnn` |
-| 翻訳（日→英） | `Helsinki-NLP/opus-mt-ja-en` |
-| 感情分析 | `nlptown/bert-base-multilingual-uncased-sentiment` |
-| 音声→テキスト | `openai/whisper-large-v3` |
-| 画像生成 | `stabilityai/stable-diffusion-xl-base-1.0` |
+#### Datasets Hub — サンプルデータ・学習データとして活用
+
+[huggingface.co/datasets](https://huggingface.co/datasets) でデータセット検索。アプリのデモデータやプロトタイプ用データとしても利用可。
+
+#### Spaces — 既存デモの再利用
+
+[huggingface.co/spaces](https://huggingface.co/spaces) に公開されたMLデモは `gradio_client` 経由でAPIとして呼び出せる。
+自前実装の前に、**同等機能の公開 Space がないか探索**すること。
 
 ---
 
