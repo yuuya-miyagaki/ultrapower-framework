@@ -4,3 +4,6 @@ node_modules/
 .env
 .env.local
 .env.*.local
+
+# プロジェクト固有ディレクトリ（フレームワーク外で管理）
+small-world/
