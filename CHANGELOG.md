@@ -12,6 +12,11 @@
 
 #### バグ修正
 
+- **ultra-ship**: Step 2 に ultra-security レポート確認フロー（Step 2.0）を追加
+  - `docs/security-reports/` の最新レポートを優先参照
+  - P1未解決 → 出荷停止のブロック機構を実装
+  - ultra-security 未実行時は既存の簡易監査（Step 2.1）にフォールバック
+
 - **AGENTS.md**: 検証責務マトリクスの矛盾を修正
   - `セキュリティ監査（OWASP/STRIDE）` / `依存脆弱性` のOwnerを `ultra-ship` → `ultra-security` に変更
   - ultra-ship は「前提確認のみ（P1未解決でブロック）」の役割に更新

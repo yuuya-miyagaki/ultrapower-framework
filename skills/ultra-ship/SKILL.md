@@ -57,7 +57,37 @@ run_command: [テスト実行コマンド]
 
 テスト失敗 → **停止** → ultra-debug を推奨
 
-## Step 2: セキュリティ監査（CSO統合）
+## Step 2: セキュリティ確認
+
+### 2.0 ultra-security レポート確認（優先）
+
+まず `docs/security-reports/` に直近の ultra-security レポートがあるか確認:
+
+```bash
+run_command: ls -t docs/security-reports/ 2>/dev/null | head -3
+```
+
+**レポートが存在する場合:**
+
+```yaml
+# 最新レポートのP1件数を確認
+mcp_filesystem_search_files: path="docs/security-reports/", pattern="*.md"
+# レポートを読んでP1（Critical）未解決件数を確認
+```
+
+| ultra-security 結果 | 対応 |
+|-------------------|------|
+| **P1 未解決が1件以上** | **出荷停止** — P1 解決後に再実行 |
+| P2 以下のみ | 件数をレポートに記録して続行 |
+| レポートなし | Step 2.1 の簡易監査を実施 |
+
+> **推奨**: 出荷前に `/security` で ultra-security を実行しておくと、このフローがスムーズに通過できる。
+
+---
+
+### 2.1 簡易セキュリティ監査（ultra-security 未実行時のフォールバック）
+
+ultra-security レポートがない場合のみ以下を実行:
 
 ### 依存関係監査
 
