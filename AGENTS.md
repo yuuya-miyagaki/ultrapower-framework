@@ -52,6 +52,15 @@
 
 > **教訓**: 「素早いプロトタイプ」としてテストをスキップした結果、本番環境でFirestoreサブコレクションの権限エラーが発生。エミュレータテストがあれば防げたバグに、3回のデプロイサイクルを費やした。
 
+> **教訓**: 実装の定数・戻り値・リトライ回数を変更する際、テストファイル内の対応する期待値も必ず同期更新すること。テストは実装の「契約」であり、契約変更時は両方を更新する。`grep -rn "変更した値" tests/` で影響範囲を事前確認。
+
+#### バニラJS 状態管理の注意（フレームワーク不使用時）
+
+React/Vue 等のリアクティブフレームワークを使用しない場合、フォーム状態と DOM の同期は手動管理が必要:
+
+- **状態オブジェクト**（Single Source of Truth）+ **`applyStateToDOM()`** 関数のペアを使用
+- テンプレート/プリセットからデータ生成時は、`isPreset` 等のフラグを必ずオーバーライド
+
 ### 2. 検証なし完了宣言禁止
 
 コマンド出力なしに「動作する」「テスト通過」と言ってはならない。
@@ -339,6 +348,34 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 
 ## Antigravity MCP ツール統合
 
+### ⚠️ MCP ツール上限 100 個（ハードリミット）
+
+Antigravity には **MCP ツールの総数が 100 個まで** というハードリミットがある。
+上限を超えたサーバーは **サイレントに拒否** され、エラーログも出ない。
+
+**予算管理ルール:**
+
+1. 新しいサーバーを追加する前に `~/.gemini/antigravity/mcp_budget.md` を確認
+2. 現在のツール合計 + 新規サーバーのツール数 ≤ 100 であることを確認
+3. 枠不足の場合は `disabledTools` で既存サーバーを削減、または使用頻度の低いサーバーを overflow に退避
+4. 変更後は `mcp_budget.md` を更新
+
+**オンデマンドスワップ運用:**
+
+大型サーバー（notebooklm: 29ツール、supabase: 29ツール）は常時ロードせず、
+必要な時だけ `mcp_config.json` に追加し、使い終わったら `mcp_config_overflow.json` に退避する。
+
+```yaml
+# スワップ手順
+1. mcp_config_overflow.json から復活対象のエントリをコピー
+2. mcp_config.json に追加（合計 ≤ 100 を確認）
+3. 枠不足なら他サーバーを overflow に退避
+4. mcp_budget.md を更新
+5. Antigravity を再起動
+```
+
+> **教訓**: 15 サーバーを一括登録した結果、先にロードされた 6 サーバーで 91/100 枠を消費し、memory・playwright・sequential-thinking が黙って拒否された。上限超過はエラーメッセージなく発生するため、予算管理が必須。
+
 ### コアツール
 
 | 用途 | ツール |
@@ -346,11 +383,25 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 | ファイル読み込み | `view_file`, `mcp_filesystem_read_text_file` |
 | ファイル書き込み | `write_to_file`, `mcp_filesystem_write_file` |
 | ファイル編集 | `replace_file_content`, `multi_replace_file_content` |
-| ファイル検索 | `find_by_name`, `grep_search` |
+| ファイル検索 | `grep_search`, `mcp_filesystem_search_files` |
 | コマンド実行 | `run_command` |
 | タスク管理 | `task_boundary` |
 | サブエージェント | `browser_subagent` |
 | 画像生成 | `generate_image` |
+
+### ワークスペース制約（重要）
+
+Antigravity では MCP filesystem ツール（`mcp_filesystem_*`）は
+登録ワークスペースのディレクトリ内のみアクセス可能。
+対象プロジェクトがワークスペース外にある場合は `run_command` + `bash -c` で操作する。
+
+| ケース | 使用ツール |
+| ------ | --------- |
+| ワークスペース内のファイル操作 | `mcp_filesystem_*` / `view_file` / `write_to_file` 等 |
+| ワークスペース外のファイル操作 | `run_command` + `bash -c 'cat/mkdir/...'` |
+| 両方を跨ぐ操作 | `run_command` を優先 |
+
+> **教訓**: Small World プロジェクトで、フレームワーク外のプロジェクトファイルを `mcp_filesystem_write_file` で操作しようとして失敗。`run_command` + `bash -c` ラッパーで解決。
 
 ### Playwright MCP（ブラウザ）
 
@@ -367,6 +418,37 @@ VITE_DB_PROVIDER=firebase  # Firebase に切替
 | リサイズ | `mcp_playwright_browser_resize` |
 | JS実行 | `mcp_playwright_browser_evaluate` |
 | 待機 | `mcp_playwright_browser_wait_for` |
+
+### Antigravity browser_subagent（ブラウザ操作）
+
+Antigravity 環境では Playwright MCP と `browser_subagent` の2つのブラウザ操作手段が利用可能。
+Playwright MCP が接続不良の場合は `browser_subagent` をフォールバックとして使用する。
+
+**選択基準:**
+
+| 状況 | 推奨ツール |
+| ---- | --------- |
+| Playwright MCP が正常に接続されている | Playwright MCP（細粒度な操作が可能） |
+| Playwright MCP が接続不良 / ツール未認識 | `browser_subagent`（フォールバック） |
+| WebP動画として操作記録が必要 | `browser_subagent`（自動録画機能） |
+
+**Playwright → browser_subagent 対応表:**
+
+| Playwright MCP | browser_subagent 代替 |
+| -------------- | --------------- |
+| `mcp_playwright_browser_navigate` | Task に URL 指定 |
+| `mcp_playwright_browser_click` | Task にクリック指示 |
+| `mcp_playwright_browser_take_screenshot` | 自動でスクリーンショット保存 |
+| レスポンシブテスト | Task でリサイズ指示 |
+
+**browser_subagent の使い方:**
+
+- Task に具体的な操作手順（URL遷移、クリック、入力、検証）を記述
+- 完了条件を明確に指定（「〜が表示されたら返す」等）
+- 結果はスクリーンショット + WebP 動画で自動保存
+- RecordingName で記録を識別可能に命名
+
+> **教訓**: Small World プロジェクトでは Playwright MCP が接続不良だったため `browser_subagent` で代替し、本番デプロイ後のUI検証を自動化。両ツールが同等の検証を提供できることを確認。
 
 ### Context7 MCP（ドキュメント検索）
 
@@ -391,6 +473,24 @@ mcp_memory_create_relations  → 知識間の関係記録
 ```
 
 **使用タイミング**: ultra-onboard / ultra-retro / ultra-debug
+
+**Memory MCP 接続不良時のフォールバック:**
+
+Memory MCP が接続不良（プロセスは起動しているがツール未認識）の場合、以下の代替で知識を永続化する:
+
+| 代替手段 | 保存先 | 用途 |
+| -------- | ------ | ---- |
+| レトロレポート JSON | `docs/retro-reports/*.json` | メトリクス・振り返りデータ（ultra-retro が自動実行） |
+| learned-patterns.md | `skills/{skill}/learned-patterns.md` | スキルごとの学習パターン蓄積 |
+| KI (Knowledge Items) | `<appDataDir>/knowledge/` | Antigravity 固有の知識永続化システム |
+
+**MCP 接続不良の診断手順:**
+
+1. `run_command: ps aux | grep mcp-server-memory` でプロセス起動を確認
+2. プロセスが起動しているがツールが使えない → Antigravity 再起動が必要
+3. プロセスが存在しない → `mcp_config.json` の設定を確認
+
+> **教訓**: Small World プロジェクトで Memory MCP のプロセスは起動していたがツールとして認識されず、接続不良と判明。Antigravity 再起動で復旧する。一時的な対処として JSON + learned-patterns.md の組み合わせで代替可能。
 
 ### Draw.io MCP（アーキテクチャ図）
 

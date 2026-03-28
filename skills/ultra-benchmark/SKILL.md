@@ -1,11 +1,11 @@
 ---
 name: ultra-benchmark
-description: "パフォーマンス計測・回帰検出。Playwright MCPでCore Web Vitals、リソース分析、バンドルサイズを計測。「パフォーマンス」「ベンチマーク」「ページ速度」「バンドルサイズ」で起動。"
+description: "パフォーマンス計測・回帰検出。ブラウザツール（Playwright MCP / browser_subagent）でCore Web Vitals、リソース分析、バンドルサイズを計測。「パフォーマンス」「ベンチマーク」「ページ速度」「バンドルサイズ」で起動。"
 ---
 
 # Ultra Benchmark — パフォーマンス回帰検出
 
-> gstack /benchmark を Antigravity + Playwright MCP に最適化
+> gstack /benchmark を Antigravity + ブラウザツール（Playwright MCP / browser_subagent）に最適化
 
 ## 起動条件
 
@@ -30,11 +30,30 @@ run_command: mkdir -p docs/benchmark-reports/baselines
 
 ## Step 2: ページパフォーマンスデータ収集
 
-対象URLにPlaywright MCPでアクセスし、パフォーマンスデータを取得:
+> **ツール選択**: Playwright MCP が利用可能なら使用（細粒度な JS 実行が可能）。未搭載の場合は `browser_subagent` で代替。
+
+対象URLにブラウザツールでアクセスし、パフォーマンスデータを取得:
+
+#### Playwright MCP 使用時
 
 ```text
 1. mcp_playwright_browser_navigate → <対象URL>
 2. mcp_playwright_browser_wait_for → time: 5（ページロード完了待ち）
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. <対象URL> にアクセス
+    2. ページロード完了を待つ
+    3. DevTools Console で以下を実行し結果を報告:
+       - performance.getEntriesByType('navigation')[0]
+       - performance.getEntriesByType('paint')
+       - performance.getEntriesByType('resource').length
+    4. スクリーンショットを撮影
+  RecordingName: benchmark_data
 ```
 
 ### 2.1 Core Web Vitals 取得

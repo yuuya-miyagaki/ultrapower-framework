@@ -249,11 +249,27 @@ run_command: firebase deploy
 
 ### Web アプリ確認
 
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替。
+
+#### Playwright MCP 使用時
+
 ```text
 mcp_playwright_browser_navigate → デプロイ先URL
 mcp_playwright_browser_snapshot → ページ構造確認
 mcp_playwright_browser_console_messages → エラー確認
 mcp_playwright_browser_take_screenshot → デプロイ確認
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [デプロイ先URL] にアクセス
+    2. ページが正常に読み込まれるか確認
+    3. コンソールエラーがないか確認
+    4. スクリーンショットを撮影して結果を報告
+  RecordingName: deploy_verify
 ```
 
 ### ポストデプロイ検証

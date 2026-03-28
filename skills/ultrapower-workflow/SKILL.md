@@ -42,7 +42,7 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
   ├── ultra-design-system  ← デザインシステム構築
   ├── ultra-design-review  ← デザイン監査＋修正
   ├── ultra-docs           ← ドキュメント同期
-  └── ultra-second-opinion ← Claude Code二次意見
+  └── ultra-second-opinion ← 別AI二次意見ブリッジ
 ```
 
 ### 自動遷移
@@ -111,7 +111,8 @@ AGENTS.md の鉄則を全スキルで厳守。特に:
 
 ## ブラウザ操作
 
-Playwright MCP を使用（AGENTS.md のマッピング表参照）。
+ブラウザ操作ツール（Playwright MCP / browser_subagent）を使用（AGENTS.md のマッピング表参照）。
+Playwright MCP が利用可能なら優先使用。未搭載の場合は `browser_subagent` で代替。
 
 ## DB バックエンド
 

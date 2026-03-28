@@ -112,6 +112,7 @@ mcp_firebase-mcp-server_firebase_init:
 | プロジェクト | 実装時間 | テスト | 概要 |
 | ------------ | -------- | ------ | ---- |
 | 個人ナレッジハブ | 74分 | 83件 100% PASS | Ultrapower v4.1で構築した実プロジェクト |
+| Small World マルチエージェントAI | 4日間 | 83件+ 100% PASS | v4.3–v4.4 開発中にフレームワーク自体も進化 |
 
 ## v4 新機能
 
@@ -129,7 +130,7 @@ mcp_firebase-mcp-server_firebase_init:
 
 - **Antigravity エージェント**（Google DeepMind 提供）
 - 以下の MCP サーバーが利用可能であること:
-  - Playwright MCP（ブラウザテスト・UI検証用）
+  - Playwright MCP（ブラウザテスト・UI検証用、オプション — browser_subagent で代替可能）
   - Context7 MCP（ライブラリドキュメント参照用）
   - Memory MCP（知識永続化用）
   - Draw.io MCP（アーキテクチャ図生成用）

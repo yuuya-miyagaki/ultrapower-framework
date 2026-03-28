@@ -1,6 +1,6 @@
 ---
 name: ultra-qa
-description: "レビュー通過後に起動。自動テスト + Playwright MCP ブラウザQA + 検証チェックリスト。"
+description: "レビュー通過後に起動。自動テスト + ブラウザQA（Playwright MCP / browser_subagent）+ 検証チェックリスト。"
 ---
 
 # Ultra QA — 統合QAテスト
@@ -85,9 +85,11 @@ run_command: npm run dev  # or 検出したコマンド
 
 ## Step 3: ブラウザQA（Webアプリの場合）
 
-Playwright MCP でユーザーフローを検証：
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替（AGENTS.md 参照）。
 
 ### ユーザーフロー検証
+
+#### Playwright MCP 使用時
 
 ```yaml
 1. mcp_playwright_browser_navigate → http://localhost:3000
@@ -99,7 +101,22 @@ Playwright MCP でユーザーフローを検証：
 6. mcp_playwright_browser_take_screenshot → 結果をスクリーンショット
 ```
 
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. http://localhost:3000 にアクセス
+    2. 主要なユーザーフローを実行（フォーム入力、ボタンクリック等）
+    3. 各ステップのスクリーンショットを撮影
+    4. コンソールエラーがないか確認
+    5. 結果を報告
+  RecordingName: qa_user_flow
+```
+
 ### レスポンシブテスト（AGENTS.md 定義に準拠）
+
+#### Playwright MCP 使用時
 
 ```text
 1. mcp_playwright_browser_resize(375, 812) → モバイル
@@ -110,14 +127,42 @@ Playwright MCP でユーザーフローを検証：
 6. mcp_playwright_browser_take_screenshot → desktop.png
 ```
 
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. http://localhost:3000 にアクセス
+    2. ウィンドウを 375x812 にリサイズしてスクリーンショット（モバイル）
+    3. ウィンドウを 768x1024 にリサイズしてスクリーンショット（タブレット）
+    4. ウィンドウを 1920x1080 にリサイズしてスクリーンショット（デスクトップ）
+    5. レイアウト崩れがあれば報告
+  RecordingName: qa_responsive
+```
+
 ### エラーチェック
+
+#### Playwright MCP 使用時
 
 ```yaml
 1. mcp_playwright_browser_console_messages(level: "error") → コンソールエラー
 2. mcp_playwright_browser_network_requests(includeStatic: false) → ネットワーク失敗
 ```
 
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. http://localhost:3000 にアクセス
+    2. DevTools のコンソールを確認し、エラーがあれば報告
+    3. ネットワークタブで失敗リクエストがあれば報告
+  RecordingName: qa_error_check
+```
+
 ### フォームバリデーションテスト
+
+#### Playwright MCP 使用時
 
 ```text
 1. mcp_playwright_browser_click → 空でsubmitボタンをクリック
@@ -127,13 +172,39 @@ Playwright MCP でユーザーフローを検証：
 5. mcp_playwright_browser_snapshot → エラー消去・成功状態を確認
 ```
 
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. フォームを空のまま送信ボタンをクリック
+    2. バリデーションエラーが表示されることを確認しスクリーンショット
+    3. 正しいデータを入力して再送信
+    4. 成功状態になることを確認しスクリーンショット
+  RecordingName: qa_form_validation
+```
+
 ## Step 4: パフォーマンスベンチマーク（オプション）
 
 簡易的なページロード時間を確認。**詳細な分析が必要な場合は ultra-benchmark スキルを使用**（Core Web Vitals、バンドルサイズ、回帰検出等に対応）。
 
+#### Playwright MCP 使用時
+
 ```text
 mcp_playwright_browser_navigate → 対象ページ
 mcp_playwright_browser_evaluate → performance.getEntriesByType('navigation')[0]?.loadEventEnd
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. 対象ページにアクセス
+    2. DevTools の Performance タブまたは console で
+       performance.getEntriesByType('navigation')[0]?.loadEventEnd を実行
+    3. 結果を報告
+  RecordingName: qa_performance
 ```
 
 ## Step 5: 検証チェックリスト

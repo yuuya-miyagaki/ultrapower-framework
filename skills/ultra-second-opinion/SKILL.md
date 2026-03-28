@@ -137,7 +137,7 @@ run_command: git log <default>..HEAD --oneline
 
 ```text
 # プロジェクト構成を把握
-find_by_name: Extensions=["ts", "tsx", "js", "jsx"], SearchDirectory="src/"
+mcp_filesystem_search_files: path="src/", pattern="**/*.{ts,tsx,js,jsx}"
 view_file: package.json（先頭20行）
 ```
 

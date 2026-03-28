@@ -63,13 +63,29 @@ mcp_context7_resolve-library-id: [関連ライブラリ]
 mcp_context7_query-docs: "[エラーメッセージ]の原因と解決方法"
 ```
 
-### 1.5 ブラウザ問題の場合（Playwright MCP使用）
+### 1.5 ブラウザ問題の場合
+
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替（AGENTS.md 参照）。
+
+#### Playwright MCP 使用時
 
 ```text
 mcp_playwright_browser_navigate → 問題のURL
 mcp_playwright_browser_console_messages → エラー確認
 mcp_playwright_browser_network_requests → API失敗確認
 mcp_playwright_browser_snapshot → DOM状態確認
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [問題のURL] にアクセス
+    2. コンソールエラーを確認して報告
+    3. ネットワークタブで失敗リクエストを確認して報告
+    4. DOM状態のスクリーンショットを撮影
+  RecordingName: debug_browser
 ```
 
 ## Step 2: パターン分析

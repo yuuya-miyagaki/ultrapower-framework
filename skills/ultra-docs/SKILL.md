@@ -41,7 +41,7 @@ run_command: git diff <default>...HEAD --name-only
 ### 1.3 ドキュメントファイル発見
 
 ```yaml
-find_by_name: Pattern="*.md", MaxDepth=2, Excludes=[".git", "node_modules", "docs/generated-reports"]
+mcp_filesystem_search_files: path=".", pattern="**/*.md", excludePatterns=[".git", "node_modules", "docs/generated-reports"]
 ```
 
 ### 1.4 変更分類

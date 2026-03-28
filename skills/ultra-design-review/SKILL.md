@@ -30,8 +30,8 @@ description: "ライブサイトのデザイン品質を審査し、問題を自
 ### DESIGN.md チェック
 
 ```yaml
-find_by_name: Pattern="DESIGN.md", MaxDepth=1
-find_by_name: Pattern="design-system.md", MaxDepth=1
+mcp_filesystem_search_files: path=".", pattern="DESIGN.md"
+mcp_filesystem_search_files: path=".", pattern="design-system.md"
 ```
 
 DESIGN.md が存在 → 全てのデザイン判定はこれを基準にする。逸脱は高重要度。
@@ -54,9 +54,24 @@ git status --porcelain
 
 ## Step 2: ファーストインプレッション（5秒ルール）
 
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替。
+
+#### Playwright MCP 使用時
+
 ```text
 mcp_playwright_browser_navigate → 対象URL
 mcp_playwright_browser_take_screenshot → first-impression.png
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [対象URL] にアクセス
+    2. ページ全体のスクリーンショットを撮影
+    3. 第一印象を報告
+  RecordingName: design_first_impression
 ```
 
 5秒で直感的に何が気になるか記録。ユーザーが初めてサイトを開いた時に感じること。
@@ -73,6 +88,8 @@ mcp_playwright_browser_take_screenshot → first-impression.png
 
 各ページに対して以下を実行：
 
+#### Playwright MCP 使用時
+
 ```text
 mcp_playwright_browser_navigate → ページURL
 mcp_playwright_browser_snapshot → DOM構造の確認
@@ -84,6 +101,18 @@ mcp_playwright_browser_take_screenshot → {page}-tablet.png
 mcp_playwright_browser_resize → {width: 375, height: 812}
 mcp_playwright_browser_take_screenshot → {page}-mobile.png
 mcp_playwright_browser_resize → {width: 1920, height: 1080}  # 戻す
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [ページURL] にアクセスしてデスクトップ表示のスクリーンショット
+    2. ウィンドウを 768x1024 にリサイズしてスクリーンショット（タブレット）
+    3. ウィンドウを 375x812 にリサイズしてスクリーンショット（モバイル）
+    4. レイアウト崩れがあれば報告
+  RecordingName: design_review_pages
 ```
 
 ### 7つのデザイン軸で診断
@@ -154,10 +183,23 @@ git commit -m "style(design): FINDING-NNN — 問題の短い説明"
 
 ### 5d. 修正後の確認
 
+#### Playwright MCP 使用時
+
 ```text
 mcp_playwright_browser_navigate → 修正したページ
 mcp_playwright_browser_take_screenshot → finding-NNN-after.png
 mcp_playwright_browser_console_messages → level: error  # エラーチェック
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. 修正したページにアクセス
+    2. スクリーンショットを撮影
+    3. コンソールエラーがないか確認
+  RecordingName: design_fix_verify
 ```
 
 分類：

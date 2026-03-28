@@ -24,7 +24,7 @@ description: "並列実行・サブエージェント委譲スキル。複数の
    説明: 同一ターンで複数ツールを同時実行
    用途: ファイル並列読込、複数検索の同時実行
    制約: 同一ファイルへの並列書き込み禁止
-   ツール: view_file, grep_search, find_by_name 等
+   ツール: view_file, grep_search, mcp_filesystem_search_files 等
 
 2. browser_subagent:
    説明: ブラウザ操作専用サブエージェント

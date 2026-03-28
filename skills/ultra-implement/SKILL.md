@@ -1,6 +1,6 @@
 ---
 name: ultra-implement
-description: "計画承認後に起動。TDDサイクルで計画を実行し、UI検証にPlaywright MCPを使用する。タスク分割と2段階レビュー（仕様準拠→コード品質）で大規模計画にも対応。"
+description: "計画承認後に起動。TDDサイクルで計画を実行し、UI検証にブラウザツール（Playwright MCP / browser_subagent）を使用する。タスク分割と2段階レビュー（仕様準拠→コード品質）で大規模計画にも対応。"
 ---
 
 # Ultra Implement — 統合実装
@@ -224,7 +224,9 @@ git commit -m "feat: <タスク名> — RED→GREEN→REFACTOR完了"
 
 ## Step 5: UI検証（Webアプリの場合）
 
-Playwright MCP でUIの動作を確認：
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替（AGENTS.md 参照）。
+
+#### Playwright MCP 使用時
 
 ```yaml
 1. mcp_playwright_browser_navigate → http://localhost:3000
@@ -234,7 +236,20 @@ Playwright MCP でUIの動作を確認：
 5. mcp_playwright_browser_take_screenshot → 証拠スクリーンショット
 ```
 
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. http://localhost:3000 にアクセス
+    2. 主要なUI要素の表示と動作を確認（クリック、入力等）
+    3. スクリーンショットを撮影して結果を報告
+  RecordingName: implement_ui_check
+```
+
 ### フォームテスト
+
+#### Playwright MCP 使用時
 
 ```text
 1. mcp_playwright_browser_navigate → フォームページ
@@ -243,6 +258,18 @@ Playwright MCP でUIの動作を確認：
 4. mcp_playwright_browser_click → 送信ボタン
 5. mcp_playwright_browser_snapshot → 結果確認
 6. mcp_playwright_browser_console_messages → エラーチェック
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. フォームページにアクセス
+    2. テストデータを入力して送信
+    3. 結果を確認しスクリーンショット
+    4. コンソールエラーがないか確認
+  RecordingName: implement_form_test
 ```
 
 ## Step 6: 進捗確認と次タスク

@@ -6,6 +6,100 @@
 > - **Minor** (x.Y.0): 機能追加（新スキル、新ステップ、新機能）
 > - **Patch** (x.y.Z): バグ修正、ドキュメント修正、lint修正
 
+## [自動進化] v4.5.0 — 2026-03-28
+
+### 構造的一貫性 + ドキュメント品質の最終仕上げ
+
+フレームワーク全体（16スキル + ドキュメント3ファイル）の網羅的レビューから抽出した改善を適用。
+
+#### 構造的一貫性修正（C）
+
+- `find_by_name`（非存在ツール）参照を全スキルから排除 → `mcp_filesystem_search_files` / `grep_search` に移行
+- 旧「Claude Code二次意見」表記を「別AI二次意見ブリッジ」に統一
+- Playwright MCP を README 要件でオプション表記に変更
+- 全16スキルに `learned-patterns.md` ファイルを生成（ヘッダーのみ含む）
+
+#### ドキュメント品質向上（D）
+
+- GUIDE.md に ultra-parallel の説明を追加
+- GUIDE.md のセットアップ手順に `.agents/` シンボリックリンク設定の具体的コマンド例を追記
+- README.md 実践結果に Small World マルチエージェントAI プロジェクトを追加
+
+#### スキル強化（S）
+
+- ultra-onboard: `find_by_name` → `mcp_filesystem_search_files` に移行（5箇所）
+- ultra-retro: Global Step のハードコードパス → 環境変数 `ULTRAPOWER_PROJECTS_DIR` 優先 + フォールバック
+- ultra-design-review / ultra-design-system / ultra-docs / ultra-parallel / ultra-second-opinion: `find_by_name` → `mcp_filesystem_search_files` / `grep_search` に移行
+
+#### 教訓の体系化（E）
+
+- AGENTS.md に「テスト-実装の契約同期」教訓を追加（learned-patterns から昇格）
+- AGENTS.md に「バニラJS 状態管理」パターンを追加
+
+---
+
+## [自動進化] v4.4.0 — 2026-03-28
+
+### ブラウザ操作デュアルモード対応（全スキル）
+
+Playwright MCP をオプション化し、未搭載時は `browser_subagent` で自動フォールバックする体制を確立。
+
+#### スキル更新（8ファイル）
+
+- **ultra-qa**: E2Eテスト・レスポンシブテスト・エラーリカバリのブラウザ操作をデュアル対応
+- **ultra-implement**: UI検証（クリックフロー/フォーム確認）のブラウザ操作をデュアル対応
+- **ultra-benchmark**: ページパフォーマンスデータ収集のブラウザ操作をデュアル対応
+- **ultra-design-review**: ファーストインプレッション・ページ巡回・修正確認のブラウザ操作をデュアル対応
+- **ultra-design-system**: 競合ビジュアルリサーチ・プレビュー表示のブラウザ操作をデュアル対応
+- **ultra-debug**: ブラウザデバッグ操作をデュアル対応
+- **ultra-ship**: デプロイ後Web検証のブラウザ操作をデュアル対応
+- **ultrapower-workflow**: ブラウザ操作セクションをツール非依存の一般化表現に変更
+
+#### MCP予算管理
+
+- **mcp_budget.md**: 新規作成（ツール使用数 75/100、退避サーバー管理）
+- Playwright MCP / sequential-thinking を overflow に退避
+- オンデマンドスワップ運用ルールを AGENTS.md に明記
+
+## [自動進化] v4.3.1 — 2026-03-28
+
+### MCP 不具合診断 & 文言修正
+
+- **AGENTS.md**: Memory MCP「非搭載」→「接続不良時のフォールバック」に修正
+  - 診断手順（ps確認→再起動→設定確認）を追加
+  - 根本原因: プロセスは起動しているが Antigravity デーモンとの接続が切断
+- **AGENTS.md**: browser_subagent セクションを「ブラウザ代替」→「ブラウザ操作」に修正
+  - Playwright MCP と browser_subagent の選択基準テーブル追加
+  - 両ツール共存の前提で記述を統一
+
+## [自動進化] v4.3.0 — 2026-03-28
+
+### 学習元: Small World（マルチエージェントAI組織プラットフォーム）
+
+#### Antigravity 環境対応
+
+- **AGENTS.md**: ワークスペース制約セクション追加（MCP filesystem vs run_command の使い分けガイド）
+- **AGENTS.md**: Memory MCP 接続不良時のフォールバック永続化手段（JSON + learned-patterns.md + KI）
+- **AGENTS.md**: `browser_subagent` ガイド追加（Playwright MCP の Antigravity 代替）
+
+#### テスト品質強化
+
+- **ultra-qa**: `learned-patterns.md` 新規作成
+  - テスト-実装乖離の自動検出チェックリスト（定数同期/リトライロジック/配列操作/API応答形式）
+  - 本番データ E2E テスト禁止ルール
+
+#### レビュー品質強化
+
+- **ultra-review**: `learned-patterns.md` 新規作成
+  - ホットスポット駆動リファクタリング警告（変更5回超で分割提案）
+  - Cross-AI レビューの有効性確認パターン
+
+#### レトロ改善
+
+- **ultra-retro**: Step 10 / Auto Step 5 の Memory MCP 永続化をオプショナル化
+  - 環境検出ロジック追加（Memory MCP 利用可否の自動判定）
+  - 利用不可の場合は JSON + learned-patterns.md で代替
+
 ## v4.2.0 (2026-03-24)
 
 ### Hugging Face Pro 統合

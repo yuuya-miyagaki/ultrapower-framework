@@ -197,7 +197,7 @@ run_command: git log origin/<default> --author="<user_name>" --format="%ad" --da
 ## Step 9: 履歴ロード・比較
 
 ```yaml
-find_by_name: Pattern="*.json", SearchDirectory="docs/retro-reports/"
+mcp_filesystem_search_files: path="docs/retro-reports/", pattern="*.json"
 ```
 
 見つかったファイルを日付順にソートして最新5件を取得。
@@ -224,7 +224,11 @@ run_command: mkdir -p docs/retro-reports
 
 `docs/retro-reports/{date}-{seq}.json` に保存。
 
-### Memory MCP に永続化
+### Memory MCP に永続化（利用可能な場合）
+
+> **環境検出**: Memory MCP ツール (`mcp_memory_*`) が利用可能か確認。
+> 利用不可の場合（Antigravity 等）は JSON ファイル保存のみで永続化を完了する。
+> 代替として `skills/{skill}/learned-patterns.md` にパターンを蓄積。
 
 > **重複防止:** 保存前に `mcp_memory_search_nodes` で既存エンティティ（特に ultra-debug が保存した `bug_resolution` タイプ）を検索し、重複を避ける。既存エンティティがあれば `mcp_memory_add_observations` で追記する。
 
@@ -302,13 +306,14 @@ Week of [date]: [N] commits, [X]k LOC, [Y]% tests | Streak: [N]d
 ### Global Step 1: リポジトリ発見
 
 ```bash
-# ホームディレクトリ以下のgitリポジトリを探索（デフォルトパス）
-run_command: find ~/Desktop ~/Projects ~/repos ~/work -maxdepth 3 -name ".git" -type d 2>/dev/null | head -20
+# 環境変数 ULTRAPOWER_PROJECTS_DIR が設定されていれば優先使用
+# 未設定の場合はユーザーにプロジェクトディレクトリのパスを質問する
+run_command: find ${ULTRAPOWER_PROJECTS_DIR:-$HOME/Desktop} -maxdepth 3 -name ".git" -type d 2>/dev/null | head -20
 ```
 
-**フォールバック:** 上記のデフォルトパスでリポジトリが見つからない場合、ユーザーにプロジェクトディレクトリのパスを質問する。
+**ルール:** ハードコードされたパスに依存せず、ユーザーの環境に合わせる。結果が0件の場合は必ずユーザーにパスを質問する。
 
-**補足:** `find_by_name` はワークスペース内限定のため、ホームディレクトリ横断検索には `run_command` を使用。
+**補足:** `mcp_filesystem_search_files` はワークスペース内限定のため、ホームディレクトリ横断検索には `run_command` を使用。
 
 ### Global Step 2: 各リポのGitデータ取得
 
@@ -445,7 +450,10 @@ run_command: git log --since="<project_start>" --format="%B" | grep -oE "(npm|np
   - 保存内容を diff 表示してから適用
 ```
 
-### Auto Step 5: Memory MCP 永続化
+### Auto Step 5: Memory MCP 永続化（利用可能な場合）
+
+> **環境検出**: Memory MCP ツールが利用可能か確認。
+> 利用不可の場合は JSON スナップショット保存 + learned-patterns.md のみで永続化を完了する。
 
 ```yaml
 mcp_memory_create_entities:

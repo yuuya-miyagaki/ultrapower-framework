@@ -20,8 +20,8 @@ description: "デザインシステムの構築・提案。プロダクトコン
 ### 既存 DESIGN.md の確認
 
 ```yaml
-find_by_name: Pattern="DESIGN.md", MaxDepth=1
-find_by_name: Pattern="design-system.md", MaxDepth=1
+mcp_filesystem_search_files: path=".", pattern="DESIGN.md"
+mcp_filesystem_search_files: path=".", pattern="design-system.md"
 ```
 
 - 存在する場合 → 「既にデザインシステムがあります。**更新**、**新規作成**、**キャンセル** のどれにしますか？」
@@ -58,14 +58,29 @@ search_web: "[プロダクトカテゴリ] best website design 2026"
 search_web: "[業界] web app UI design"
 ```
 
-### Playwright MCP でビジュアルリサーチ（オプション）
+### ブラウザでビジュアルリサーチ（オプション）
 
 上位3-5サイトを訪問:
+
+> **ツール選択**: Playwright MCP が利用可能なら使用。未搭載の場合は `browser_subagent` で代替。
+
+#### Playwright MCP 使用時
 
 ```text
 1. mcp_playwright_browser_navigate → [競合サイトURL]
 2. mcp_playwright_browser_take_screenshot → /tmp/design-research-[サイト名].png
 3. mcp_playwright_browser_snapshot → 構造分析
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [競合サイトURL] にアクセス
+    2. スクリーンショットを撮影
+    3. 色、フォント、レイアウトの特徴を報告
+  RecordingName: design_research
 ```
 
 ### 3層シンセシス
@@ -164,11 +179,24 @@ write_to_file: /tmp/design-preview-[timestamp].html
 7. **ライト/ダークモード切替**
 8. **レスポンシブ**
 
-### Playwright MCP でプレビュー表示
+### ブラウザでプレビュー表示
+
+#### Playwright MCP 使用時
 
 ```yaml
 1. mcp_playwright_browser_navigate → file:///tmp/design-preview-[timestamp].html
 2. mcp_playwright_browser_take_screenshot → docs/designs/preview.png
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. file:///tmp/design-preview-[timestamp].html を開く
+    2. プレビューページのスクリーンショットを撮影
+    3. ライト/ダークモード両方を確認
+  RecordingName: design_preview
 ```
 
 ## Step 7: DESIGN.md 生成

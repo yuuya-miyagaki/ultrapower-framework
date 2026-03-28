@@ -19,7 +19,7 @@ description: "新しいプロジェクトやコードベースに最初に触れ
 
 ```text
 # ドキュメントファイル一覧
-find_by_name: Pattern="*.md", MaxDepth=2
+mcp_filesystem_search_files: path=".", pattern="**/*.md"
 
 # パッケージ定義ファイル確認
 view_file: package.json / Cargo.toml / requirements.txt / go.mod（存在するものを読む）
@@ -54,9 +54,9 @@ mcp_memory_search_nodes: "[プロジェクト名]"
 view_file: package.json（"main", "scripts.start", "scripts.dev" を確認）
 
 # フレームワーク別のエントリポイント検索
-find_by_name: Pattern="main.*", Extensions=["ts", "tsx", "js", "jsx"], SearchDirectory="src/", MaxDepth=2
-find_by_name: Pattern="app.*", Extensions=["ts", "tsx", "js", "jsx"], SearchDirectory="src/", MaxDepth=2
-find_by_name: Pattern="index.*", Extensions=["ts", "tsx", "js", "jsx"], SearchDirectory="src/", MaxDepth=2
+mcp_filesystem_search_files: path="src/", pattern="main.*"
+mcp_filesystem_search_files: path="src/", pattern="app.*"
+mcp_filesystem_search_files: path="src/", pattern="index.*"
 ```
 
 ### 2.2 レイヤー構造マッピング
@@ -107,7 +107,7 @@ DB BACKEND:
 ```bash
 # db.js / adapters/ ディレクトリの存在確認
 grep_search: "getDB\|DB_PROVIDER\|adapter"
-find_by_name: Pattern="*-adapter.js", SearchDirectory="src/adapters"
+mcp_filesystem_search_files: path="src/", pattern="*-adapter.*"
 ```
 
 以下のパターンが見つかれば **デュアルDB構成**:
