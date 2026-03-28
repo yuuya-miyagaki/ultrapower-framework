@@ -44,6 +44,34 @@ run_command: git log <default>..HEAD --oneline
 
 `<default>` は上記で検出したデフォルトブランチ名。変更の全体像を把握し、タッチされたファイルを全て読む。
 
+### 2.1 Context7 最新ベストプラクティス参照
+
+> 変更されたコードが使用している主要ライブラリの最新ドキュメントを自動参照。
+> 古い実装パターン・非推奨APIの使用を早期検出する。
+
+```yaml
+# 1. package.json / requirements.txt から主要ライブラリを特定
+view_file: package.json（dependencies セクション）
+
+# 2. 変更ファイルが import しているライブラリを抽出
+run_command: git diff <default>...HEAD -- "*.js" "*.ts" "*.jsx" "*.tsx" | grep "^+" | grep -oE "from ['\"]([^'\"]+)['\"]" | sort -u | head -10
+
+# 3. 主要ライブラリの最新ドキュメントを取得（最大3ライブラリ）
+mcp_context7_resolve-library-id:
+  libraryName: "[検出したライブラリ名]"
+  query: "best practices and common pitfalls"
+
+mcp_context7_query-docs:
+  libraryId: "[取得したID]"
+  query: "deprecated APIs migration guide breaking changes"
+```
+
+**Context7 参照ルール:**
+
+- 変更ファイルに関連するライブラリのみ参照（全ライブラリを調べない）
+- 最大3ライブラリまで（レビュー速度とのバランス）
+- 非推奨API使用を検出した場合は Pass 2 の CRITICAL に追加
+
 ## Step 3: 2パスレビュー
 
 ### Pass 1: 仕様準拠チェック（Spec Compliance）

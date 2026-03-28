@@ -115,17 +115,18 @@ browser_subagent:
   RecordingName: design_review_pages
 ```
 
-### 7つのデザイン軸で診断
+### 8つのデザイン軸で診断
 
 | 軸 | チェック内容 | 重要度 |
 |----|------------|-------|
 | **タイポグラフィ** | フォントサイズの一貫性、行間、フォントの混在 | 高 |
 | **余白** | padding/marginの統一、要素間距離のパターン | 高 |
-| **色彩** | カラーパレットの一貫性、コントラスト比、アクセシビリティ | 高 |
+| **色彩** | カラーパレットの一貫性、コントラスト比 | 高 |
 | **階層** | 視覚的優先度、CTAの目立ち方、情報の流れ | 高 |
 | **一貫性** | コンポーネントスタイルの統一（ボタン、カード、入力欄） | 中 |
 | **レスポンシブ** | ブレークポイントでの崩れ、タッチ対象サイズ | 中 |
 | **AIスロップ** | 下記の検出パターン参照 | 高 |
+| **アクセシビリティ** | WCAG 2.1 AA 準拠（下記チェックリスト参照） | 高 |
 
 ### AIスロップ検出パターン
 
@@ -138,6 +139,40 @@ browser_subagent:
 | **デフォルトフォント症候群** | system-ui そのまま、フォント選択の意図なし |
 | **過剰なアニメーション** | 全要素にtransition、意味のないホバーエフェクト |
 | **空白恐怖** | 余白が少なすぎ。情報を詰め込みすぎ |
+
+### アクセシビリティ（WCAG 2.1 AA）チェックリスト
+
+#### Playwright MCP 使用時
+
+```text
+# コントラスト比をJSで計算
+mcp_playwright_browser_evaluate → document.querySelectorAll('*')でcolor/background-colorを収集
+mcp_playwright_browser_snapshot → aria属性・role・alt・label の確認
+mcp_playwright_browser_evaluate → document.querySelectorAll('a, button, input, select, textarea')でfocus可能要素を確認
+```
+
+#### browser_subagent 使用時（フォールバック）
+
+```yaml
+browser_subagent:
+  Task: |
+    1. [対象URL] にアクセス
+    2. Tabキーでフォーカス移動し、全てのインタラクティブ要素にフォーカスが当たるか確認
+    3. フォーカスインジケーターが視覚的に確認できるか報告
+    4. 画像のalt属性、フォームのlabel属性の有無を確認
+  RecordingName: a11y_check
+```
+
+| チェック項目 | 基準 | 確認方法 |
+|------------|------|---------|
+| **テキストコントラスト比** | 通常テキスト 4.5:1 以上、大テキスト 3:1 以上 | CSSのcolor/background-colorから計算 |
+| **画像の代替テキスト** | 全img要素に意味のあるalt属性 | DOM確認 |
+| **フォームラベル** | 全input/select/textareaにlabel or aria-label | DOM確認 |
+| **キーボードフォーカス** | Tab移動で全インタラクティブ要素に到達可能 | browser操作で確認 |
+| **フォーカスインジケーター** | フォーカス時に視覚的なアウトライン（outline: none禁止） | CSSとbrowser確認 |
+| **タッチターゲットサイズ** | 最小 44×44px | CSSのwidht/heightで確認 |
+| **見出し階層** | h1→h2→h3の順序が正しい（スキップなし） | DOM確認 |
+| **色のみに依存しない** | エラー表示などに色以外の手段（アイコン/テキスト）を使用 | 目視確認 |
 
 各軸のスコアを **1-10** で記録。ベースラインとして保存。
 
@@ -241,7 +276,8 @@ browser_subagent:
 ║  ULTRA-DESIGN-REVIEW 完了                                ║
 ║  STATUS: [DONE / DONE_WITH_CONCERNS]                     ║
 ╠══════════════════════════════════════════════════════════╣
-║  デザインスコア:  [ベースライン] → [最終]                  ║
+║  デザインスコア:  [ベースライン] → [最終]（8軸平均）          ║
+║  a11y スコア:    [ベースライン] → [最終]（WCAG 2.1 AA）       ║
 ║  AIスロップスコア: [ベースライン] → [最終]                  ║
 ║  検出:           [N] 件                                  ║
 ║    修正(verified):  [N] 件                               ║

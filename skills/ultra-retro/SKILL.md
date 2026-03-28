@@ -180,6 +180,67 @@ ULTRAPOWER METRICS:
   TDD違反:             [Y/N]
 ```
 
+## Step 7.5: Learned-Patterns 利用率追跡
+
+> **「書いたら使え」原則**: learned-patterns.md に書いたパターンが参照されていなければ documentation debt。
+
+### 利用率分析
+
+各スキルの `learned-patterns.md` から登録パターンを抽出し、gitログ・セッション記録と照合:
+
+```bash
+# 全スキルの learned-patterns.md からパターン名を抽出
+run_command: for f in skills/*/learned-patterns.md; do skill=$(echo "$f" | cut -d/ -f2); grep "^### " "$f" 2>/dev/null | while read line; do echo "$skill|$line"; done; done
+
+# 各パターンのキーワードが直近のコミットメッセージ・コード変更に出現するか確認
+run_command: git log --since="30 days" --format="%s %b" | head -100
+```
+
+### 利用率レポート
+
+```text
+╔══════════════════════════════════════════════════════════════╗
+║  LEARNED-PATTERNS 利用率レポート                              ║
+╠══════════════════════════════════════════════════════════════╣
+║  スキル              パターン名              参照数   判定    ║
+║  ─────               ──────────              ─────   ────    ║
+║  ultra-qa            E2Eテスト環境分離        3      ⭐ 昇格候補 ║
+║  ultra-review        ホットスポット警告        2      ✅ 活用中  ║
+║  ultra-implement     Provider Pattern         0      ⚠️ 要検討 ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+### 判定基準と対応
+
+| 参照数 | 判定 | 対応 |
+|--------|------|------|
+| **3回以上** | ⭐ SKILL.md 昇格候補 | ユーザーに昇格提案（パターンが普遍的に有効） |
+| **1-2回** | ✅ 活用中 | 現状維持 |
+| **0回（30日超経過）** | ⚠️ 要検討 | 削除候補として報告（プロジェクト固有だった可能性） |
+
+### 昇格プロセス
+
+昇格候補パターンが見つかった場合:
+
+1. パターンの内容を SKILL.md 本体に組み込む形に整形
+2. ユーザーに確認: 「このパターンを [スキル名]/SKILL.md に昇格しますか？」
+3. 承認後に SKILL.md に移動（learned-patterns.md からは削除）
+4. CHANGELOG.md に昇格記録を追記
+
+### Memory MCP 永続化（利用可能な場合）
+
+```yaml
+mcp_memory_create_entities:
+  - name: "patterns-usage-[日付]"
+    entityType: "patterns_metrics"
+    observations:
+      - "総パターン数: [N]"
+      - "活用中: [N], 昇格候補: [N], 要検討: [N]"
+      - "昇格実行: [スキル名/パターン名] (あれば)"
+```
+
+---
+
 ## Step 8: ストリーク追跡
 
 ```bash

@@ -27,6 +27,9 @@ description: "常時アクティブ。ユーザーの入力とコンテキスト
 | 「デザインチェック」「見た目」「デザイン監査」 | ultra-design-review |
 | 「ドキュメント更新」「docs同期」、PRマージ後 | ultra-docs |
 | 「二次意見」「セカンドオピニオン」「別の目で」 | ultra-second-opinion |
+| 「セキュリティ」「脆弱性」「OWASP」 | ultra-security |
+| 「コンテキスト確認」「進捗確認」「予算確認」 | ultra-context-sentinel |
+| 独立タスクの並列実行 | ultra-parallel |
 
 ## フェーズ遷移ルール
 
@@ -42,7 +45,12 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
   ├── ultra-design-system  ← デザインシステム構築
   ├── ultra-design-review  ← デザイン監査＋修正
   ├── ultra-docs           ← ドキュメント同期
-  └── ultra-second-opinion ← 別AI二次意見ブリッジ
+  ├── ultra-second-opinion ← 別AI二次意見ブリッジ
+  ├── ultra-security       ← セキュリティ監査（ship前推奨）
+  └── ultra-parallel       ← 並列タスク実行
+
+常駐スキル:
+  └── ultra-context-sentinel ← セッション健全性監視（自動起動）
 ```
 
 ### 自動遷移
@@ -64,6 +72,10 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 - **ultra-qa完了後** → ultra-design-review を提案（Webアプリの場合）
 - **ultra-review完了後** → ultra-second-opinion を提案（重要な変更の場合）
 - **ship完了後** → ultra-docs を提案
+- **ship直前** → ultra-security を提案（P1未解決で出荷阻止）
+- **セッション開始時 / ultra-onboard 完了後** → ultra-context-sentinel（Bootstrap モード）をプロアクティブに提案
+- **大タスク完了ごと** → ultra-context-sentinel を実行（Heartbeat モード）
+- **セッション終了時** → ultra-context-sentinel を実行（Handover モード）
 
 ### 独立スキルのフィードバック機構
 
@@ -101,6 +113,9 @@ onboard → brainstorm → plan → implement → review → qa → ship → ret
 - `/design-review` → ultra-design-review
 - `/docs` → ultra-docs
 - `/second-opinion` → ultra-second-opinion
+- `/security` → ultra-security
+- `/sentinel` → ultra-context-sentinel
+- `/parallel` → ultra-parallel
 
 ## 絶対ルール（AGENTS.md 「5つの鉄則」+ 「安全ガードレール」参照）
 
