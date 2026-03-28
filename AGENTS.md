@@ -22,6 +22,8 @@
 | ultra-design-review | デザイン監査・自動修正 |
 | ultra-docs | ドキュメント同期・整合性チェック |
 | ultra-second-opinion | 別AIへの二次意見ブリッジ |
+| ultra-security | セキュリティ監査・OWASP・MCP supply chain |
+| ultra-context-sentinel | セッション健全性監視・コンテキスト喚失検出・MCP予算管理 |
 | ultra-parallel | 独立タスクの並列実行・browser_subagent委譲・バックグラウンドパイプライン |
 | ultrapower-workflow | 常時（自動ルーティング） |
 
@@ -100,6 +102,37 @@ AIで限界コストが低い→完全版を常に選ぶ。ショートカット
 ### 5. 3回失敗でエスカレーション
 
 同じ問題に3回以上挑戦しない。3回失敗→ユーザーにエスカレーション。
+
+---
+
+## 3つの進化原則（v5.0 追加）
+
+> CROSS-AI 分析（Gemini × Claude Code）から導出。フレームワーク進化の方向性を制御する。
+
+### 6. 機能より基盤（Infrastructure First）
+
+新機能の追加よりも、既存機能の品質・信頼性・セキュリティを優先する。
+動かない機能より、動く基盤が価値を持つ。
+
+- ultra-security を実装してから ultra-canary を検討する
+- テスト基盤が不安定なら新機能より基盤修正
+- 「基盤なしにP0に置くと、動かない機能が最高優先で入る」
+
+### 7. 追いつきより深化（Deepen, Don't Chase）
+
+他フレームワーク（gstack, Superpowers, Antigravity Kit）の機能に「追いつく」より、Ultrapower 独自の強み（自己進化、MCP統合、教訓の体系化）を深化させる。
+
+- ❌ gstack の canary をコピー → ⭕ ultra-retro の学習サイクルを深化
+- ❌ 全機能のパリティ達成 → ⭕ learned-patterns の利用率追跡で「本当に使われる知見」を選別
+- 独自のMCPエコシステム活用（Context7 常時参照、Memory MCP 永続化）
+
+### 8. 書いたら使え（Use What You Write）
+
+学習パターン・ドキュメント・スキルを書くだけで終わらせない。利用率を追跡し、使われないものは削除する。
+
+- learned-patterns.md の各パターンの参照回数を ultra-retro で追跡
+- 30日参照ゼロ → 削除候補として報告
+- 3回以上参照 → SKILL.md に昇格提案
 
 ---
 
@@ -650,8 +683,8 @@ ultrapower/skills/{skill-name}/SKILL.md
 | -------- | ---------------- | ----------- |
 | 自動テスト実行 | **ultra-qa** | ultra-implement（開発中）, ultra-ship（最終確認） |
 | コードレビュー | **ultra-review** | — |
-| セキュリティ監査（OWASP/STRIDE） | **ultra-ship** | ultra-onboard（概観のみ） |
-| 依存脆弱性（npm audit等） | **ultra-ship** | ultra-onboard（概観のみ） |
+| セキュリティ監査（OWASP/STRIDE） | **ultra-security** | ultra-ship（P1未解決でブロック） |
+| 依存脆弱性（npm audit等） | **ultra-security** | ultra-ship（最終確認のみ） |
 | レスポンシブUI検証 | **ultra-qa** | ultra-design-review（デザイン観点） |
 | パフォーマンス計測 | **ultra-benchmark** | ultra-qa（簡易ロード時間のみ） |
 | デザイン品質検証 | **ultra-design-review** | — |

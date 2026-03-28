@@ -6,6 +6,84 @@
 > - **Minor** (x.Y.0): 機能追加（新スキル、新ステップ、新機能）
 > - **Patch** (x.y.Z): バグ修正、ドキュメント修正、lint修正
 
+## [自動進化] v5.1.0 — 2026-03-28
+
+### Cross-AI セカンドオピニオン（Claude Code）からの修正・強化
+
+#### バグ修正
+
+- **AGENTS.md**: 検証責務マトリクスの矛盾を修正
+  - `セキュリティ監査（OWASP/STRIDE）` / `依存脆弱性` のOwnerを `ultra-ship` → `ultra-security` に変更
+  - ultra-ship は「前提確認のみ（P1未解決でブロック）」の役割に更新
+
+- **ultra-context-sentinel**: 起動条件の「自動起動（推奨）」表記を修正
+  - 実態に合わせ「プロアクティブ提案（推奨）」に変更
+  - ultra-onboard 完了後にエージェントが提案するという意味を明確化
+
+- **ultrapower-workflow**: sentinel の自動起動記述を「プロアクティブに提案」に統一
+
+#### UI強化（既存スキル深化）
+
+- **ultra-design-review**: 7軸 → 8軸（アクセシビリティ軸を追加）
+  - WCAG 2.1 AA チェックリスト（8項目）追加
+  - Playwright MCP と browser_subagent の両方でa11y確認手順を追加
+  - 完了レポートに a11y スコアを追加
+  - 競合4フレームワーク全て未実装の独自機能
+
+- **ultra-design-system**: Step 4「統合提案」を1案 → 3案比較に変更
+  - CONSERVATIVE / BALANCED / BOLD の3バリアントを同時提案
+  - Antigravity の `generate_image` ツールでビジュアルモックアップ生成をオプション追加
+  - Step 5「ドリルダウン」に案のブレンド対応を追記
+
+---
+
+## [CROSS-AI進化] v5.0.0 — 2026-03-28
+
+### CROSS-AI 分析に基づくフレームワーク進化（Phase 1）
+
+Gemini × Claude Code のセカンドオピニオンを統合し、Ultrapower の独自性を深化させる3つの改善を実装。
+
+#### 新規スキル
+
+- **ultra-security**: セキュリティ監査スキル新規追加（OWASP Top 10 + STRIDE + シークレット考古学 + 依存関係監査 + MCP supply chain チェック）
+  - gstack `/cso` + antigravity-kit `vulnerability-scanner` を統合
+  - Phase 3「MCP Supply Chain 監査」は Ultrapower 独自フェーズ
+  - ultra-ship との連携（P1 未解決で出荷阻止）
+
+#### スキル強化
+
+- **ultra-retro**: Step 7.5「Learned-Patterns 利用率追跡」を追加
+  - パターン参照回数の自動スキャン
+  - 0回参照（30日超）→ 削除候補、3回以上参照 → SKILL.md 昇格提案
+  - Memory MCP への永続化対応
+- **ultra-review**: Step 2.1「Context7 最新ベストプラクティス参照」を追加
+  - 変更ファイルの import ライブラリを自動検出
+  - Context7 MCP で最新ドキュメントを参照し非推奨API使用を検出
+- **ultra-qa**: Step 0.5「Context7 テストベストプラクティス参照」を追加
+  - テストフレームワークの最新ドキュメントを自動参照
+
+#### 設計原則
+
+- AGENTS.md に「3つの進化原則」を追加:
+  - **機能より基盤（Infrastructure First）**: 新機能より既存機能の品質・セキュリティを優先
+  - **追いつきより深化（Deepen, Don't Chase）**: 他FWのコピーより独自の強みの深化
+  - **書いたら使え（Use What You Write）**: 利用率追跡で使われないパターンを削除
+- スキル一覧に ultra-security, ultra-context-sentinel を追加（合計18スキル）
+
+#### Phase 2: 基盤強化
+
+- **ultra-debug**: Step 0「Freeze ゾーン宣言」を追加
+  - 修正対象ファイルを明示的に宣言し、スコープ外変更を防止
+  - Freeze 違反の自動チェック機能
+  - スコープ拡大時のユーザー承認フロー
+- **ultra-context-sentinel**: セッション健全性監視スキル新規追加
+  - モード 1: Session Bootstrap（前回セッション引き継ぎ + セッション台帳）
+  - モード 2: Heartbeat（コンテキスト喪失兆候の自動検出）
+  - モード 3: Handover（セッション引き継ぎ情報の永続化）
+  - モード 4: MCP Budget（予算消費ペースの監視とアラート）
+
+---
+
 ## [自動進化] v4.5.0 — 2026-03-28
 
 ### 構造的一貫性 + ドキュメント品質の最終仕上げ

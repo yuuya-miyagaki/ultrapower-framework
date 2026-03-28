@@ -206,3 +206,25 @@ mcp_memory_create_relations:
 ║  次の推奨:     ultra-brainstorm/implement ║
 ╚══════════════════════════════════════════╝
 ```
+
+## Step 6: Context Sentinel 自動起動
+
+> onboard 完了 = セッション開始。ultra-context-sentinel の Bootstrap モードを自動実行。
+
+セッション台帳を初期化し、以降のフェーズでコンテキスト健全性を監視する:
+
+```yaml
+SESSION_LEDGER:
+  session_id: "[タイムスタンプ]"
+  project: "[ULTRA-ONBOARD で特定したプロジェクト名]"
+  started_at: "[現在時刻]"
+  goals: "[ユーザーの要望から推定]"
+  completed: []
+  assumptions:
+    - "[onboard で発見した技術スタック]"
+    - "[onboard で発見した DB 構成]"
+    - "[onboard で発見した脆弱性の有無]"
+```
+
+> **注**: 明示的に `/sentinel` を呼ばなくても、onboard 完了時にセッション台帳は自動初期化される。
+
